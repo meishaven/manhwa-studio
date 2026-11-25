@@ -165,7 +165,7 @@
     ],
     "win": {
       "target": [
-        "nsis-web",
+        "nsis",
         "zip"
       ],
       "icon": "resources/windows/icon.ico"
@@ -193,7 +193,7 @@
     "nsis": {
       "oneClick": false,
       "perMachine": true,
-      "useZip": true,
+      "useZip": false,
       "preCompressedFileExtensions": [
         ".exe",
         ".mp4",
