@@ -196,7 +196,6 @@
       "perMachine": true,
       "useZip": false,
       "preCompressedFileExtensions": [
-        ".exe",
         ".mp4",
         ".webp",
         ".ico",
