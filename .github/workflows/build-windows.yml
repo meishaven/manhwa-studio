@@ -180,11 +180,18 @@ jobs:
           Get-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt") |
             ForEach-Object { Write-Host $_ }
           if (Test-Path -LiteralPath $appListing) {
-            Write-Host "=== Embedded EXE archive entries and compression methods ==="
-            Select-String -Path $appListing -Pattern "Manhwa Studio.exe|^Method =|^Path = app" |
-              Select-Object -First 60 |
-              ForEach-Object { Write-Host $_.Line }
+            Write-Host "=== Executable and native-binary entries in embedded app archive ==="
+            $entryLines = Select-String -Path $appListing -Pattern "Manhwa Studio\\.exe|Path = .*\\.(exe|dll|node)$|Method =" |
+              Select-Object -First 100
+            if ($entryLines.Count -eq 0) {
+              Write-Host "No executable, DLL, or native-module entries found in the app archive listing."
+            } else {
+              $entryLines | ForEach-Object { Write-Host $_.Line }
+            }
           }
+
+          # Do not include extracted copies of the 400+ MB payload in the diagnostic artifact.
+          Remove-Item -LiteralPath $extractDir, $appExtractDir -Recurse -Force -ErrorAction SilentlyContinue
 
       - name: Smoke-test Windows installer and shortcuts
         shell: pwsh
@@ -302,7 +309,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: Manhwa-Studio-Installer-Diagnostics
-          path: ${{ runner.temp }}/ManhwaStudioDiagnostics/
+          path: |
+            ${{ runner.temp }}/ManhwaStudioDiagnostics/*.txt
           if-no-files-found: warn
           retention-days: 14
 
