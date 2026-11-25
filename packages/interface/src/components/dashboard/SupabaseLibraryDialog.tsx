@@ -310,7 +310,8 @@ export default function SupabaseLibraryDialog({
 
       setProgress("Adding " + files.length + " pages to the KŌMA workspace…");
       await onImport(files, folders);
-      setNotice("Sent " + files.length + " pages from " + chapterLabel + " to the workspace. Check the dashboard status message.");
+      setNotice("Imported " + files.length + " pages from " + chapterLabel + ".");
+      onClose();
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Chapter import failed.");
     } finally {
