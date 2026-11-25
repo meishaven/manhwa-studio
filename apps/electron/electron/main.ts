@@ -17,7 +17,7 @@ import type { DesktopOpenLogsFolderResult } from "../../../packages/types/src/de
 // directory is derived from the package name — pin it to "koma-studio" to
 // preserve the existing user profile (models, device-id, settings) under
 // %APPDATA%.
-app.setName("koma-studio");
+app.setName("manhwa-studio");
 
 import { randomBytes } from "node:crypto";
 import fs from "node:fs";
