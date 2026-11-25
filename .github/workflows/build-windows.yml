@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 env:
   BUN_VERSION: "1.4.0"
@@ -84,3 +84,13 @@ jobs:
             apps/electron/release-desktop/ci/latest.yml
           if-no-files-found: error
           retention-days: 14
+
+      - name: Publish standalone installer as GitHub Release asset
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $installer = Get-ChildItem "apps/electron/release-desktop/ci" -Filter "*.exe" -File | Select-Object -First 1
+          if (-not $installer) { throw "Windows installer .exe is missing." }
+          $tag = "manhwa-studio-v1.3.1-build-${{ github.run_number }}"
+          gh release create $tag $installer.FullName --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title "Manhwa Studio 1.3.1 - Windows x64" --notes "Standalone Windows x64 installer built by GitHub Actions."
