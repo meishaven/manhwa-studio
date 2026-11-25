@@ -164,6 +164,7 @@
       }
     ],
     "win": {
+      "executableName": "Manhwa Studio",
       "target": [
         "nsis",
         "zip"
@@ -203,8 +204,9 @@
         ".7z"
       ],
       "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
+      "createDesktopShortcut": "always",
       "createStartMenuShortcut": true,
+      "shortcutName": "Manhwa Studio",
       "include": "installer.nsh",
       "installerIcon": "resources/windows/icon.ico",
       "uninstallerIcon": "resources/windows/icon.ico",
