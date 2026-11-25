@@ -1,0 +1,86 @@
+name: Build Manhwa Studio for Windows
+
+on:
+  push:
+    branches:
+      - feature/supabase-library
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  BUN_VERSION: "1.4.0"
+  VITE_AUTH_DISABLED: "true"
+  MINI_BACKEND_ARTIFACTS_PUBKEY: "HdJwZKhP6eGVAVUrWh5QdYtlEPW5kzqsbD9xRNlN98w="
+  KOMA_MINI_BACKEND_ARTIFACTS_PUBKEY: "HdJwZKhP6eGVAVUrWh5QdYtlEPW5kzqsbD9xRNlN98w="
+  CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+jobs:
+  windows-installer:
+    name: Windows x64 installer
+    runs-on: windows-latest
+    timeout-minutes: 120
+    env:
+      NODE_OPTIONS: "--max-old-space-size=6144"
+    steps:
+      - name: Check out Manhwa Studio
+        uses: actions/checkout@v7
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        run: python -m pip install uv
+
+      - name: Install workspace dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build CPU mini-backend
+        working-directory: apps/electron
+        env:
+          MINI_BACKEND_ACCELERATION_PROFILE: cpu
+        run: bun run build:mini
+
+      - name: Build Manhwa Studio application
+        working-directory: apps/electron
+        run: bun run build:app
+
+      - name: Build standalone Windows installer
+        working-directory: apps/electron
+        run: npx electron-builder --win nsis --x64 --publish never --config.forceCodeSigning=false --config.directories.output=release-desktop/ci
+
+      - name: Verify installer exists
+        shell: pwsh
+        run: |
+          $installers = Get-ChildItem "apps/electron/release-desktop/ci" -Filter "*.exe" -File
+          if (-not $installers -or $installers.Count -eq 0) {
+            throw "No Windows installer .exe was produced."
+          }
+          $installers | ForEach-Object {
+            if ($_.Length -lt 1MB) { throw "Installer looks unexpectedly small: $($_.Name)" }
+            Write-Host ("Installer: {0} ({1:N1} MB)" -f $_.Name, ($_.Length / 1MB))
+          }
+
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: Manhwa-Studio-Windows-x64
+          path: |
+            apps/electron/release-desktop/ci/*.exe
+            apps/electron/release-desktop/ci/*.blockmap
+            apps/electron/release-desktop/ci/latest.yml
+          if-no-files-found: error
+          retention-days: 14
