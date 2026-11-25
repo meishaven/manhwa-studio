@@ -45,6 +45,7 @@ const STORAGE_BUCKET = "manhwa-pages";
 
 const readSavedConnection = (): ConnectionConfig => {
   const fallback = { projectUrl: DEFAULT_PROJECT_URL, publishableKey: "" };
+  if (typeof window === "undefined") return fallback;
   try {
     const raw = window.localStorage.getItem(CONFIG_STORAGE_KEY);
     if (!raw) return fallback;
@@ -297,12 +298,12 @@ export default function SupabaseLibraryDialog({
       }
 
       const chapterLabel = selectedSeries.title + " — " + (selectedChapter.title || ("Chapter " + (selectedChapter.chapter_number ?? selectedChapter.id)));
-      const folderToken = "supabase-library::" + selectedSeries.id + "::" + selectedChapter.id + "::" + chapterLabel;
+      const folderToken = chapterLabel;
       const folders = new Map<File, string>(files.map((file) => [file, folderToken]));
 
       setProgress("Adding " + files.length + " pages to the KŌMA workspace…");
       await onImport(files, folders);
-      setNotice("Imported " + files.length + " pages from " + chapterLabel + ".");
+      setNotice("Sent " + files.length + " pages from " + chapterLabel + " to the workspace. Check the dashboard status message.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Chapter import failed.");
     } finally {
