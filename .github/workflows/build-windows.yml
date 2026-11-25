@@ -60,8 +60,9 @@ jobs:
 
       - name: Build standalone Windows installer
         working-directory: apps/electron
-        # 26.15.6 fixed an NSIS bug that could silently omit the main app executable.
-        # Pin the CLI explicitly because bun.lock currently resolves 26.15.3.
+        # Use the fixed v26 builder and the newer NSIS 3.12 toolset.
+        env:
+          DEBUG: electron-builder:7z
         run: npx --yes electron-builder@26.17.0 --win nsis --x64 --publish never --config.forceCodeSigning=false --config.directories.output=release-desktop/ci
 
       - name: Verify installer exists
@@ -79,6 +80,110 @@ jobs:
           $installers | ForEach-Object {
             if ($_.Length -lt 1MB) { throw "Installer looks unexpectedly small: $($_.Name)" }
             Write-Host ("Installer: {0} ({1:N1} MB)" -f $_.Name, ($_.Length / 1MB))
+          }
+
+      - name: Inspect embedded application package
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $diagnosticDir = Join-Path $env:RUNNER_TEMP "ManhwaStudioDiagnostics"
+          New-Item -ItemType Directory -Force -Path $diagnosticDir | Out-Null
+          $installer = Get-ChildItem "apps/electron/release-desktop/ci" -Filter "Manhwa-Studio-*-win-x64.exe" -File |
+            Select-Object -First 1
+          $sourceExe = "apps/electron/release-desktop/ci/win-unpacked/Manhwa Studio.exe"
+          if (-not $installer -or -not (Test-Path -LiteralPath $sourceExe -PathType Leaf)) {
+            throw "Installer or unpacked application executable is missing before archive inspection."
+          }
+
+          $source = Get-Item -LiteralPath $sourceExe
+          $sourceHash = (Get-FileHash -LiteralPath $sourceExe -Algorithm SHA256).Hash
+          @(
+            "Installer: $($installer.FullName)"
+            "Installer size: $($installer.Length)"
+            "Unpacked executable size: $($source.Length)"
+            "Unpacked executable SHA256: $sourceHash"
+          ) | Set-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+
+          $sevenZipPath = Join-Path $env:ProgramFiles "7-Zip\7z.exe"
+          if (-not (Test-Path -LiteralPath $sevenZipPath)) {
+            try {
+              choco install 7zip.install --yes --no-progress
+            } catch {
+              Write-Warning "Could not install 7-Zip for payload inspection: $($_.Exception.Message)"
+            }
+          }
+          if (-not (Test-Path -LiteralPath $sevenZipPath)) {
+            Write-Warning "7-Zip executable is unavailable; installer archive listing was skipped."
+            exit 0
+          }
+
+          $listingPath = Join-Path $diagnosticDir "installer-7z-list.txt"
+          & $sevenZipPath l -slt $installer.FullName 2>&1 |
+            Out-File -LiteralPath $listingPath -Encoding utf8
+          $listExit = $LASTEXITCODE
+          "7-Zip installer listing exit code: $listExit" |
+            Add-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+
+          $extractDir = Join-Path $diagnosticDir "installer-extracted"
+          New-Item -ItemType Directory -Force -Path $extractDir | Out-Null
+          $extractLog = Join-Path $diagnosticDir "installer-extract.txt"
+          & $sevenZipPath x $installer.FullName "-o$extractDir" -y 2>&1 |
+            Out-File -LiteralPath $extractLog -Encoding utf8
+          $extractExit = $LASTEXITCODE
+          "7-Zip installer extraction exit code: $extractExit" |
+            Add-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+
+          $appArchives = @(Get-ChildItem -LiteralPath $extractDir -Filter "app-64.7z" -Recurse -File -ErrorAction SilentlyContinue)
+          if ($appArchives.Count -eq 0) {
+            $appArchives = @(Get-ChildItem -LiteralPath $extractDir -Filter "app-*.7z" -Recurse -File -ErrorAction SilentlyContinue)
+          }
+          if ($appArchives.Count -eq 0) {
+            Write-Warning "No embedded app-*.7z archive was exposed by 7-Zip. Listing and extraction logs were saved."
+            exit 0
+          }
+
+          $appArchive = $appArchives[0]
+          "Embedded app archive: $($appArchive.FullName)" |
+            Add-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+          $appListing = Join-Path $diagnosticDir "app-package-7z-list.txt"
+          & $sevenZipPath l -slt $appArchive.FullName 2>&1 |
+            Out-File -LiteralPath $appListing -Encoding utf8
+          $appListExit = $LASTEXITCODE
+          "Embedded app archive listing exit code: $appListExit" |
+            Add-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+
+          $appExtractDir = Join-Path $diagnosticDir "app-package-extracted"
+          New-Item -ItemType Directory -Force -Path $appExtractDir | Out-Null
+          $appExtractLog = Join-Path $diagnosticDir "app-package-extract.txt"
+          & $sevenZipPath x $appArchive.FullName "-o$appExtractDir" -y 2>&1 |
+            Out-File -LiteralPath $appExtractLog -Encoding utf8
+          $appExtractExit = $LASTEXITCODE
+          "Embedded app archive extraction exit code: $appExtractExit" |
+            Add-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+
+          $embeddedExe = Get-ChildItem -LiteralPath $appExtractDir -Filter "Manhwa Studio.exe" -Recurse -File -ErrorAction SilentlyContinue |
+            Select-Object -First 1
+          if ($embeddedExe) {
+            $embeddedHash = (Get-FileHash -LiteralPath $embeddedExe.FullName -Algorithm SHA256).Hash
+            @(
+              "Embedded executable path: $($embeddedExe.FullName)"
+              "Embedded executable size: $($embeddedExe.Length)"
+              "Embedded executable SHA256: $embeddedHash"
+              "Embedded executable matches source: $($embeddedHash -eq $sourceHash)"
+            ) | Add-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+          } else {
+            "Embedded application executable was not found after manual archive extraction." |
+              Add-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+          }
+
+          Write-Host "=== Installer payload summary ==="
+          Get-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt") |
+            ForEach-Object { Write-Host $_ }
+          if (Test-Path -LiteralPath $appListing) {
+            Write-Host "=== Embedded EXE archive entries and compression methods ==="
+            Select-String -Path $appListing -Pattern "Manhwa Studio.exe|^Method =|^Path = app" |
+              Select-Object -First 60 |
+              ForEach-Object { Write-Host $_.Line }
           }
 
       - name: Smoke-test Windows installer and shortcuts
@@ -102,6 +207,53 @@ jobs:
 
           $appExe = Join-Path $installDir "Manhwa Studio.exe"
           if (-not (Test-Path -LiteralPath $appExe -PathType Leaf)) {
+            $diagnosticDir = Join-Path $env:RUNNER_TEMP "ManhwaStudioDiagnostics"
+            New-Item -ItemType Directory -Force -Path $diagnosticDir | Out-Null
+
+            Write-Host "Checking for the executable anywhere under the install directory..."
+            $nestedMatches = @(Get-ChildItem -LiteralPath $installDir -Filter "Manhwa Studio.exe" -Recurse -File -ErrorAction SilentlyContinue)
+            if ($nestedMatches.Count -gt 0) {
+              $nestedMatches | Select-Object FullName, Length |
+                Format-Table -AutoSize |
+                Out-String |
+                Set-Content -LiteralPath (Join-Path $diagnosticDir "nested-executable-search.txt")
+            } else {
+              "No Manhwa Studio.exe exists anywhere under $installDir" |
+                Set-Content -LiteralPath (Join-Path $diagnosticDir "nested-executable-search.txt")
+            }
+
+            try {
+              $detections = Get-MpThreatDetection -ErrorAction Stop | Where-Object {
+                ($_.Resources -join " ") -match "Manhwa Studio|ManhwaStudioSmokeTest"
+              }
+              $detections | Format-List * |
+                Out-String |
+                Set-Content -LiteralPath (Join-Path $diagnosticDir "defender-threat-detections.txt")
+              if (@($detections).Count -eq 0) {
+                "No matching Get-MpThreatDetection entries were returned." |
+                  Set-Content -LiteralPath (Join-Path $diagnosticDir "defender-threat-detections.txt")
+              }
+            } catch {
+              "Defender threat query unavailable: $($_.Exception.Message)" |
+                Set-Content -LiteralPath (Join-Path $diagnosticDir "defender-threat-detections.txt")
+            }
+
+            try {
+              $since = (Get-Date).AddMinutes(-30)
+              Get-WinEvent -FilterHashtable @{
+                LogName = "Microsoft-Windows-Windows Defender/Operational"
+                StartTime = $since
+              } -ErrorAction Stop |
+                Where-Object { $_.Id -in 1116, 1117, 1121, 1122 } |
+                Select-Object TimeCreated, Id, LevelDisplayName, Message |
+                Format-List |
+                Out-String |
+                Set-Content -LiteralPath (Join-Path $diagnosticDir "defender-operational-events.txt")
+            } catch {
+              "Defender event log query unavailable: $($_.Exception.Message)" |
+                Set-Content -LiteralPath (Join-Path $diagnosticDir "defender-operational-events.txt")
+            }
+
             Write-Host "Top-level files found in the install directory:"
             if (Test-Path -LiteralPath $installDir) {
               Get-ChildItem -LiteralPath $installDir -Force |
@@ -144,6 +296,15 @@ jobs:
           Write-Host "Installed executable: $appExe"
           Write-Host "Verified shortcuts:"
           $matchingShortcuts | ForEach-Object { Write-Host $_ }
+
+      - name: Upload installer diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: Manhwa-Studio-Installer-Diagnostics
+          path: ${{ runner.temp }}/ManhwaStudioDiagnostics/
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Upload Windows installer
         uses: actions/upload-artifact@v7
