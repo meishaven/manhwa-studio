@@ -212,9 +212,9 @@
     },
     "protocols": [
       {
-        "name": "KŌMA Studio Link",
+        "name": "Manhwa Studio Link",
         "schemes": [
-          "komastudio"
+          "manhwastudio"
         ]
       }
     ],
