@@ -15,8 +15,6 @@ env:
   MINI_BACKEND_ARTIFACTS_PUBKEY: "HdJwZKhP6eGVAVUrWh5QdYtlEPW5kzqsbD9xRNlN98w="
   KOMA_MINI_BACKEND_ARTIFACTS_PUBKEY: "HdJwZKhP6eGVAVUrWh5QdYtlEPW5kzqsbD9xRNlN98w="
   CSC_IDENTITY_AUTO_DISCOVERY: "false"
-  # Work around electron-builder 26.15.x NSIS BCJ2 extraction bug.
-  ELECTRON_BUILDER_7Z_FILTER: "BCJ"
 
 jobs:
   windows-installer:
@@ -62,9 +60,9 @@ jobs:
 
       - name: Build standalone Windows installer
         working-directory: apps/electron
-        env:
-          ELECTRON_BUILDER_7Z_FILTER: BCJ
-        run: npx electron-builder --win nsis --x64 --publish never --config.forceCodeSigning=false --config.directories.output=release-desktop/ci
+        # 26.15.6 fixed an NSIS bug that could silently omit the main app executable.
+        # Pin the CLI explicitly because bun.lock currently resolves 26.15.3.
+        run: npx --yes electron-builder@26.17.0 --win nsis --x64 --publish never --config.forceCodeSigning=false --config.directories.output=release-desktop/ci
 
       - name: Verify installer exists
         shell: pwsh
@@ -104,10 +102,18 @@ jobs:
 
           $appExe = Join-Path $installDir "Manhwa Studio.exe"
           if (-not (Test-Path -LiteralPath $appExe -PathType Leaf)) {
-            Write-Host "Files found in the install directory:"
+            Write-Host "Top-level files found in the install directory:"
             if (Test-Path -LiteralPath $installDir) {
-              Get-ChildItem -LiteralPath $installDir -Recurse -Force |
-                ForEach-Object { Write-Host $_.FullName }
+              Get-ChildItem -LiteralPath $installDir -Force |
+                Select-Object -First 40 Name, Length, Mode |
+                Format-Table -AutoSize |
+                Out-String |
+                Write-Host
+            }
+            $unpackedExe = "apps/electron/release-desktop/ci/win-unpacked/Manhwa Studio.exe"
+            if (Test-Path -LiteralPath $unpackedExe -PathType Leaf) {
+              $source = Get-Item -LiteralPath $unpackedExe
+              Write-Host ("Unpacked source executable exists: {0:N1} MB" -f ($source.Length / 1MB))
             }
             throw "Installer did not place Manhwa Studio.exe in the selected install directory."
           }
