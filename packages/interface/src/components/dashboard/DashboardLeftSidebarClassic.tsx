@@ -16,6 +16,7 @@ import {
   SkipBack,
   SkipForward,
   RefreshCcw,
+  Database,
 } from 'lucide-react';
 
 import { useI18n, type TranslateFn } from '../../i18n';
@@ -75,6 +76,7 @@ interface DashboardLeftSidebarProps {
   getRootProps: () => Record<string, unknown>;
   getInputProps: () => Record<string, unknown>;
   isDragActive: boolean;
+  onOpenSupabaseLibrary: () => void;
   setImages: (images: LoadedImage[]) => void;
   setActiveId: (id: string | null) => void;
   invalidateAioPipelineHistory: () => void;
@@ -307,6 +309,7 @@ export default function DashboardLeftSidebarClassic({
   getRootProps,
   getInputProps,
   isDragActive,
+  onOpenSupabaseLibrary,
   setImages,
   setActiveId,
   invalidateAioPipelineHistory,
@@ -523,6 +526,15 @@ export default function DashboardLeftSidebarClassic({
       <div className="koma-files">
         <div className="koma-files__header">
           <span>{t('dashboard.sidebar.files', { count: images.length })}</span>
+          <button
+            type="button"
+            className="koma-iconbtn koma-iconbtn--xs"
+            title="Open Supabase Library"
+            aria-label="Open Supabase Library"
+            onClick={onOpenSupabaseLibrary}
+          >
+            <Database size={13} />
+          </button>
           {images.length > 0 && (
             <div className="flex items-center gap-1">
               <button
