@@ -1,10 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { useAuthContext } from '../../../contexts/AuthContext';
 import DashboardLeftSidebar, {
   type AioImageHistoryMeta,
 } from '../../../components/dashboard/DashboardLeftSidebar';
 import DuplicatePagesWarning from './DuplicatePagesWarning';
+import SupabaseLibraryDialog from '../../../components/dashboard/SupabaseLibraryDialog';
 import { SIDEBAR_RESIZE_STEP } from '../../../constants/dashboard.constants';
 import { getRotatedDims } from '../../../utils/dashboard.utils';
 import { useAuthAccountProcessingStats } from '../hooks/auth-account';
@@ -30,6 +31,7 @@ interface ImageCollectionSidebarProps {
   getRootProps: () => Record<string, unknown>;
   getInputProps: () => Record<string, unknown>;
   isDragActive: boolean;
+  onDrop: (files: File[], folders?: ReadonlyMap<File, string>) => Promise<void>;
 
   /* ── Cross-domain region/state setters (not yet migrated) ── */
   invalidateAioPipelineHistory: () => void;
@@ -63,6 +65,7 @@ export default function ImageCollectionSidebar({
   forwardAioPipelineForImage,
   removeImage,
 }: ImageCollectionSidebarProps) {
+  const [supabaseLibraryOpen, setSupabaseLibraryOpen] = useState(false);
   const images = useImageCollectionStore((s) => s.images);
   const activeId = useImageCollectionStore((s) => s.activeId);
   const isExtractingUploads = useImageCollectionStore(
@@ -126,6 +129,7 @@ export default function ImageCollectionSidebar({
         removeImage={removeImage}
         chapterSelection={chapterSelection}
       />
+      <SupabaseLibraryDialog open={supabaseLibraryOpen} onClose={() => setSupabaseLibraryOpen(false)} onImport={onDrop} />
       <DuplicatePagesWarning />
     </>
   );
