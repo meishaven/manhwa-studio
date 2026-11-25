@@ -76,7 +76,6 @@ export function useDashboardUploads({
   invalidateAioPipelineHistory,
   warmupPayload,
 }: UseDashboardUploadsArgs) {
-  const activeId = useImageCollectionStore((s) => s.activeId);
   const isExtractingUploads = useImageCollectionStore(
     (s) => s.isExtractingUploads,
   );
@@ -414,7 +413,6 @@ export function useDashboardUploads({
       setStatusMessage(error instanceof Error ? error.message : 'Failed to load the images.');
     }
   }, [
-    activeId,
     addImages,
     clearPendingDuplicates,
     extractImagesFromChapterArchives,
