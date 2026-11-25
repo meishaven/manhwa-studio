@@ -1707,6 +1707,7 @@ export const DashboardPage = ({
       getRootProps={getRootProps}
       getInputProps={getInputProps}
       isDragActive={isDragActive}
+      onDrop={onDrop}
       removeImage={removeImage}
       activeImage={activeImage}
       modeLabel={modeLabel}
