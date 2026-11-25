@@ -82,12 +82,12 @@ jobs:
             Select-Object -First 1
           if (-not $installer) { throw "Installer EXE is missing before smoke test." }
 
-          $installDir = Join-Path $env:RUNNER_TEMP "Manhwa Studio Installer Smoke Test"
+          $installDir = Join-Path $env:RUNNER_TEMP "ManhwaStudioSmokeTest"
           if (Test-Path -LiteralPath $installDir) {
             Remove-Item -LiteralPath $installDir -Recurse -Force
           }
 
-          $arguments = "/S /D=`"$installDir`""
+          $arguments = "/S /D=$installDir"
           $process = Start-Process -FilePath $installer.FullName -ArgumentList $arguments -PassThru -Wait
           if ($process.ExitCode -ne 0) {
             throw "Silent install failed with exit code $($process.ExitCode)."
