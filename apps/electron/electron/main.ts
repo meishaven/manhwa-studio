@@ -645,7 +645,7 @@ const createWindow = async (): Promise<void> => {
     ...restoredBrowserWindowOptions(restoredPlacement),
     minWidth: 1024,
     minHeight: 720,
-    title: "KŌMA Studio",
+    title: "Manhwa Studio",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
