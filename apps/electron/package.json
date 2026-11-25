@@ -243,6 +243,9 @@
         "owner": "meishaven",
         "repo": "manhwa-studio"
       }
-    ]
+    ],
+    "toolsets": {
+      "nsis": "1.2.1"
+    }
   }
 }
