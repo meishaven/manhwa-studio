@@ -76,7 +76,7 @@ interface DashboardLeftSidebarProps {
   getRootProps: () => Record<string, unknown>;
   getInputProps: () => Record<string, unknown>;
   isDragActive: boolean;
-  onOpenSupabaseLibrary: () => void;
+  onOpenSupabaseLibrary?: () => void;
   setImages: (images: LoadedImage[]) => void;
   setActiveId: (id: string | null) => void;
   invalidateAioPipelineHistory: () => void;
