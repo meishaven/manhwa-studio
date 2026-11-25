@@ -2,7 +2,7 @@ import React from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import {
   Upload, Image as ImageIcon, Trash2, RotateCw, ArrowUp, ArrowDown,
-  X, Check, ListChecks, PanelLeftOpen, ChevronLeft, ChevronRight, SkipBack, SkipForward, RefreshCcw,
+  X, Check, ListChecks, PanelLeftOpen, ChevronLeft, ChevronRight, SkipBack, SkipForward, RefreshCcw, Database,
 } from 'lucide-react';
 
 import { useI18n, type TranslateFn } from '../../../i18n';
@@ -54,6 +54,7 @@ interface DashboardLeftSidebarProps {
   getRootProps: () => Record<string, unknown>;
   getInputProps: () => Record<string, unknown>;
   isDragActive: boolean;
+  onOpenSupabaseLibrary: () => void;
   setImages: (images: LoadedImage[]) => void;
   setActiveId: (id: string | null) => void;
   invalidateAioPipelineHistory: () => void;
@@ -265,6 +266,7 @@ export default function DashboardLeftSidebarNoir({
   getRootProps,
   getInputProps,
   isDragActive,
+  onOpenSupabaseLibrary,
   setImages,
   setActiveId,
   invalidateAioPipelineHistory,
@@ -465,6 +467,15 @@ export default function DashboardLeftSidebarNoir({
       <div className="relative flex min-h-0 flex-1 flex-col p-3">
         <div className="mb-2 flex items-center justify-between">
           <span className="kicker">// {t('dashboard.sidebar.files', { count: images.length })}</span>
+          <button
+            type="button"
+            title="Open Supabase Library"
+            aria-label="Open Supabase Library"
+            onClick={onOpenSupabaseLibrary}
+            className="panel-cut-sm grid h-6 w-6 place-items-center bg-ink-3 text-emerald-400 transition hover:bg-emerald-500 hover:text-ink"
+          >
+            <Database size={12} />
+          </button>
           {images.length > 0 && (
             <div className="flex items-center gap-1">
               <button
