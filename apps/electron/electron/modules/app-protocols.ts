@@ -1,7 +1,7 @@
 /**
  * Internal/external app protocol constants.
  */
-const APP_PROTOCOL = "komastudio";
+const APP_PROTOCOL = "manhwastudio";
 const INTERNAL_APP_PROTOCOL = "app";
 const INTERNAL_APP_HOST = "local";
 const INTERNAL_APP_ORIGIN = `${INTERNAL_APP_PROTOCOL}://${INTERNAL_APP_HOST}`;
