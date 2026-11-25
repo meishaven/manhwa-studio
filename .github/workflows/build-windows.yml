@@ -74,6 +74,62 @@ jobs:
             Write-Host ("Installer: {0} ({1:N1} MB)" -f $_.Name, ($_.Length / 1MB))
           }
 
+      - name: Smoke-test Windows installer and shortcuts
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem "apps/electron/release-desktop/ci" -Filter "*.exe" -File |
+            Where-Object { $_.Name -notlike "*uninstaller*" } |
+            Select-Object -First 1
+          if (-not $installer) { throw "Installer EXE is missing before smoke test." }
+
+          $installDir = Join-Path $env:RUNNER_TEMP "Manhwa Studio Installer Smoke Test"
+          if (Test-Path -LiteralPath $installDir) {
+            Remove-Item -LiteralPath $installDir -Recurse -Force
+          }
+
+          $arguments = "/S /D=`"$installDir`""
+          $process = Start-Process -FilePath $installer.FullName -ArgumentList $arguments -PassThru -Wait
+          if ($process.ExitCode -ne 0) {
+            throw "Silent install failed with exit code $($process.ExitCode)."
+          }
+
+          $appExe = Join-Path $installDir "Manhwa Studio.exe"
+          if (-not (Test-Path -LiteralPath $appExe -PathType Leaf)) {
+            Write-Host "Files found in the install directory:"
+            if (Test-Path -LiteralPath $installDir) {
+              Get-ChildItem -LiteralPath $installDir -Recurse -Force |
+                ForEach-Object { Write-Host $_.FullName }
+            }
+            throw "Installer did not place Manhwa Studio.exe in the selected install directory."
+          }
+
+          $shortcutRoots = @(
+            "$env:ProgramData\Microsoft\Windows\Start Menu\Programs",
+            "$env:Public\Desktop",
+            "$env:USERPROFILE\Desktop"
+          ) | Where-Object { Test-Path -LiteralPath $_ }
+
+          $shell = New-Object -ComObject WScript.Shell
+          $matchingShortcuts = @()
+          foreach ($root in $shortcutRoots) {
+            $links = Get-ChildItem -LiteralPath $root -Filter "*.lnk" -Recurse -File -ErrorAction SilentlyContinue
+            foreach ($link in $links) {
+              $shortcut = $shell.CreateShortcut($link.FullName)
+              if ($shortcut.TargetPath -and
+                  ([System.IO.Path]::GetFullPath($shortcut.TargetPath) -ieq [System.IO.Path]::GetFullPath($appExe))) {
+                $matchingShortcuts += $link.FullName
+              }
+            }
+          }
+
+          if ($matchingShortcuts.Count -eq 0) {
+            throw "Installer put the EXE in place but did not create a shortcut pointing to it."
+          }
+
+          Write-Host "Installed executable: $appExe"
+          Write-Host "Verified shortcuts:"
+          $matchingShortcuts | ForEach-Object { Write-Host $_ }
+
       - name: Upload Windows installer
         uses: actions/upload-artifact@v7
         with:
