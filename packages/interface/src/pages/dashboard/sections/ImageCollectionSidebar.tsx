@@ -59,6 +59,7 @@ export default function ImageCollectionSidebar({
   getRootProps,
   getInputProps,
   isDragActive,
+  onDrop,
   invalidateAioPipelineHistory,
   getAioImageSnapshotMeta,
   rewindAioPipelineForImage,
@@ -111,6 +112,7 @@ export default function ImageCollectionSidebar({
         getRootProps={getRootProps}
         getInputProps={getInputProps}
         isDragActive={isDragActive}
+        onOpenSupabaseLibrary={() => setSupabaseLibraryOpen(true)}
         setImages={setImages}
         setActiveId={setActiveId}
         invalidateAioPipelineHistory={invalidateAioPipelineHistory}
