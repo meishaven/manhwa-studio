@@ -2,9 +2,7 @@
   !ifmacrodef setInstallModePerAllUsers
     !insertmacro setInstallModePerAllUsers
   !endif
-  StrCpy $INSTDIR "D:\KŌMA Studio"
-  IfFileExists "C:\*.*" 0 +2
-    StrCpy $INSTDIR "C:\KŌMA Studio"
+  StrCpy $INSTDIR "$PROGRAMFILES64\\Manhwa Studio"
 !macroend
 
 !macro customUnInstall
