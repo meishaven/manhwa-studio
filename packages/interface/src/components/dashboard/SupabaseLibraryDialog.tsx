@@ -106,12 +106,18 @@ const requestSupabaseJson = async <T,>(
   config: ConnectionConfig,
   path: string,
 ): Promise<T> => {
+  const headers: Record<string, string> = {
+    apikey: config.publishableKey,
+    Accept: "application/json",
+  };
+  // Legacy anon keys are JWTs and also serve as the PostgREST bearer identity.
+  // Modern sb_publishable_ keys are gateway keys, not JWT bearer tokens.
+  if (config.publishableKey.startsWith("eyJ")) {
+    headers.Authorization = "Bearer " + config.publishableKey;
+  }
   const response = await fetch(config.projectUrl + path, {
     method: "GET",
-    headers: {
-      apikey: config.publishableKey,
-      Accept: "application/json",
-    },
+    headers,
     cache: "no-store",
   });
   if (!response.ok) {
@@ -280,7 +286,8 @@ export default function SupabaseLibraryDialog({
             valid.projectUrl + "/storage/v1/object/public/" + STORAGE_BUCKET + "/" + storagePath,
             {
               method: "GET",
-              headers: { apikey: valid.publishableKey },
+              // The existing manhwa-pages bucket is public, so image bytes do
+              // not need an authorization header or a service credential.
               cache: "no-store",
             },
           );
@@ -401,7 +408,7 @@ export default function SupabaseLibraryDialog({
                 >
                   <option value="">Select a series…</option>
                   {series.map((item) => (
-                    <option key={item.id} value={item.id}>{item.title}</option>
+                    <option key={item.id} value={item.id}>{item.title.replace(/[-_]+/g, " ").replace(/\b([a-z])/g, (letter) => letter.toUpperCase())}</option>
                   ))}
                 </select>
               </label>
