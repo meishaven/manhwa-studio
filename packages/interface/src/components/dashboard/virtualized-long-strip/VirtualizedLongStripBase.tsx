@@ -26,6 +26,8 @@ export interface VirtualizedLongStripProps {
     end: number;
   }) => void;
   readonly focusIndexSignal?: FocusIndexSignal | null;
+  /** Page to show while the scroll viewport has not produced a virtual range. */
+  readonly fallbackIndex?: number;
 }
 
 export interface VirtualizedLongStripBaseProps
@@ -102,6 +104,7 @@ export function VirtualizedLongStripBase({
   ariaLabel = "Pages",
   onVisibleRangeChange,
   focusIndexSignal,
+  fallbackIndex = 0,
   variant,
 }: VirtualizedLongStripBaseProps): ReactElement {
   assertConfiguration(itemCount, estimatedItemHeight, overscan);
@@ -159,6 +162,10 @@ export function VirtualizedLongStripBase({
   };
 
   const virtualItems = enabled ? virtualizer.getVirtualItems() : [];
+  const safeFallbackIndex =
+    Number.isSafeInteger(fallbackIndex) && fallbackIndex >= 0 && fallbackIndex < itemCount
+      ? fallbackIndex
+      : 0;
   const firstVisibleIndex = virtualItems[0]?.index ?? null;
   const lastVisibleIndex = virtualItems.at(-1)?.index ?? null;
 
@@ -225,26 +232,39 @@ export function VirtualizedLongStripBase({
     >
       <ol role="list" style={listStyle}>
         {enabled
-          ? virtualItems.map((item) => (
-            <li
-              key={item.key}
-              ref={virtualizer.measureElement}
-              data-index={item.index}
-              data-long-strip-index={item.index}
-              aria-posinset={item.index + 1}
-              aria-setsize={itemCount}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                display: "flow-root",
-                transform: `translateY(${item.start}px)`,
-              }}
-            >
-              {renderItem(item.index)}
-            </li>
-          ))
+          ? virtualItems.length > 0
+            ? virtualItems.map((item) => (
+              <li
+                key={item.key}
+                ref={virtualizer.measureElement}
+                data-index={item.index}
+                data-long-strip-index={item.index}
+                aria-posinset={item.index + 1}
+                aria-setsize={itemCount}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  display: "flow-root",
+                  transform: `translateY(${item.start}px)`,
+                }}
+              >
+                {renderItem(item.index)}
+              </li>
+            ))
+            : itemCount > 0 ? (
+              <li
+                key={itemKey(safeFallbackIndex)}
+                data-index={safeFallbackIndex}
+                data-long-strip-index={safeFallbackIndex}
+                aria-posinset={safeFallbackIndex + 1}
+                aria-setsize={itemCount}
+                style={{ display: "flow-root" }}
+              >
+                {renderItem(safeFallbackIndex)}
+              </li>
+            ) : null
           : Array.from({ length: itemCount }, (_, index) => (
             <li
               key={itemKey(index)}
