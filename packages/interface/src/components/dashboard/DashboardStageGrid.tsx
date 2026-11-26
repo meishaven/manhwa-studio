@@ -32,6 +32,7 @@ const DashboardStageGrid = ({
   if (itemCount > 5) {
     return (
       <VirtualizedLongStrip
+        className="w-full min-w-0 col-span-full"
         itemCount={itemCount}
         estimatedItemHeight={viewMode === 'long_strip' ? 800 : 400}
         overscan={viewMode === 'long_strip' ? 2 : 3}
