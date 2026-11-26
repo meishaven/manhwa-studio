@@ -202,6 +202,19 @@ describe("long-strip accessibility", () => {
     }
   });
 
+  it("renders the selected fallback page when the virtual viewport has no measurements", async () => {
+    render(
+      <VirtualizedLongStrip
+        itemCount={10}
+        enabled={true}
+        fallbackIndex={4}
+        renderItem={(index) => <span>Page {index + 1}</span>}
+      />,
+    );
+
+    expect(screen.getByText("Page 5")).toBeDefined();
+  });
+
   it("renders identically without the callback prop", async () => {
     const metrics = stubElementMetrics();
 
