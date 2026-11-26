@@ -249,7 +249,8 @@ export function VirtualizedLongStripBase({
                   top: 0,
                   left: 0,
                   width: "100%",
-                  display: "flow-root",
+                  display: "flex",
+                  justifyContent: "center",
                   transform: `translateY(${item.start}px)`,
                 }}
               >
@@ -263,7 +264,7 @@ export function VirtualizedLongStripBase({
                 data-long-strip-index={safeFallbackIndex}
                 aria-posinset={safeFallbackIndex + 1}
                 aria-setsize={itemCount}
-                style={{ display: "flow-root" }}
+                style={{ display: "flex", justifyContent: "center", width: "100%" }}
               >
                 {renderItem(safeFallbackIndex)}
               </li>
@@ -274,7 +275,7 @@ export function VirtualizedLongStripBase({
               data-long-strip-index={index}
               aria-posinset={index + 1}
               aria-setsize={itemCount}
-              style={{ display: "flow-root" }}
+              style={{ display: "flex", justifyContent: "center", width: "100%" }}
             >
               {renderItem(index)}
             </li>
