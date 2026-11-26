@@ -213,6 +213,9 @@ describe("long-strip accessibility", () => {
     );
 
     expect(screen.getByText("Page 5")).toBeDefined();
+    const viewport = screen.getByRole("region", { name: "Pages" });
+    expect(viewport.style.width).toBe("100%");
+    expect(viewport.style.minWidth).toBe("0px");
   });
 
   it("renders identically without the callback prop", async () => {
