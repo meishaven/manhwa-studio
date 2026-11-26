@@ -216,6 +216,10 @@ describe("long-strip accessibility", () => {
     const viewport = screen.getByRole("region", { name: "Pages" });
     expect(viewport.style.width).toBe("100%");
     expect(viewport.style.minWidth).toBe("0");
+    const pageRow = screen.getByText("Page 5").closest("li");
+    expect(pageRow?.style.display).toBe("flex");
+    expect(pageRow?.style.justifyContent).toBe("center");
+    expect(pageRow?.style.width).toBe("100%");
   });
 
   it("renders identically without the callback prop", async () => {
