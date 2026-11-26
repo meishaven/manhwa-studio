@@ -377,6 +377,7 @@ function DashboardStageSection({
     (index: number) => images[index]?.id ?? `${index}`,
     [images],
   );
+  const activeImageIndex = images.findIndex((image) => image.id === resolvedActiveId);
   // Stable row callbacks: memoized PipelineStageRow rows bail out unless
   // their own data (or one of these identities) actually changed.
   const handleStageImageSelect = useCallback(
@@ -649,6 +650,7 @@ function DashboardStageSection({
               renderStageItem={renderStageItem}
               onVisibleRangeChange={onVisibleRangeChange}
               focusIndexSignal={focusIndexSignal}
+              fallbackIndex={activeImageIndex >= 0 ? activeImageIndex : 0}
             />
           </Suspense>
         </div>
