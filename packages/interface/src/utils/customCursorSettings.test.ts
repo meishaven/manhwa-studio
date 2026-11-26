@@ -1,0 +1,3 @@
+import { describe, expect, it } from 'vitest';
+import { DEFAULT_CUSTOM_CURSOR_SETTINGS, sanitizeCustomCursorSettings } from './customCursorSettings';
+describe('custom cursor defaults',()=>{it('uses the native system cursor by default',()=>{expect(DEFAULT_CUSTOM_CURSOR_SETTINGS.enabled).toBe(false);expect(sanitizeCustomCursorSettings(null).enabled).toBe(false)});it('still allows explicit opt-in',()=>{expect(sanitizeCustomCursorSettings({enabled:true}).enabled).toBe(true);expect(sanitizeCustomCursorSettings({enabled:false}).enabled).toBe(false)})});
