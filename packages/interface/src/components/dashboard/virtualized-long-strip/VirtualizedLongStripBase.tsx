@@ -223,6 +223,9 @@ export function VirtualizedLongStripBase({
       onBlurCapture={handleBlur}
       style={{
         position: "relative",
+        width: "100%",
+        minWidth: 0,
+        maxWidth: "100%",
         height,
         minHeight: 0,
         overflowY: "auto",
