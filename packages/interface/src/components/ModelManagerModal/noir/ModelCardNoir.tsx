@@ -10,6 +10,7 @@ import {
   modelStageLabel,
 } from "../../../models/translation-models-registry";
 import { useAioPipelineStore } from "@/pages/dashboard/stores/aio-pipeline-store";
+import { assessModelHardwareFit } from "@/models/model-hardware-fit";
 import { isUntestedModel } from "../../../models/untested-models";
 import { ModelInfoTooltipNoir } from "./ModelInfoTooltipNoir";
 import { ModelProgressBarNoir } from "./ModelProgressBarNoir";
@@ -57,11 +58,20 @@ export const ModelCardNoir = ({
 }: ModelCardProps) => {
   const { t } = useI18n();
   const { model } = entry;
-  const deviceVramGb = useAioPipelineStore((s) => s.aioDeviceInfo?.vram_gb ?? null);
+  const deviceInfo = useAioPipelineStore((s) => s.aioDeviceInfo);
+  const deviceVramGb = deviceInfo?.vram_gb ?? null;
   const aboveHardware =
     model.minVramGb !== undefined &&
     deviceVramGb !== null &&
     model.minVramGb > deviceVramGb;
+  const hardwareFit = assessModelHardwareFit(model, deviceInfo);
+  const hardwareFitPresentation = {
+    recommended: { tone: "mint" as const, label: "modelHardware.fit.recommended" },
+    caution: { tone: "gold" as const, label: "modelHardware.fit.caution" },
+    avoid: { tone: "crimson" as const, label: "modelHardware.fit.avoid" },
+    unknown: { tone: "neutral" as const, label: "modelHardware.fit.unknown" },
+    download_only: { tone: "azure" as const, label: "modelHardware.fit.downloadOnly" },
+  }[hardwareFit.status];
 
   const isActive =
     entry.status === "downloading" || entry.status === "queued" || entry.status === "verifying";
@@ -157,6 +167,19 @@ export const ModelCardNoir = ({
             <div className="mt-2">
               <Stamp tone="neutral" title={t("modelCard.badge.untested")}>
                 {t("modelCard.badge.untested")}
+              </Stamp>
+            </div>
+          )}
+          {hardwareFit.status !== "download_only" && (
+            <div className="mt-2">
+              <Stamp
+                tone={hardwareFitPresentation.tone}
+                title={t(
+                  hardwareFit.reasonKey as Parameters<typeof t>[0],
+                  hardwareFit.reasonVars,
+                )}
+              >
+                {t(hardwareFitPresentation.label as Parameters<typeof t>[0])}
               </Stamp>
             </div>
           )}
