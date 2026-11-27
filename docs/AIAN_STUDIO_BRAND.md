@@ -56,3 +56,5 @@ Use the same master mark across:
 The vector master assets live in `docs/branding/` and are reused by the Electron, Tauri, and landing-app favicon paths. The Electron and Tauri window titles now display **AiAN Studio**.
 
 The legacy Electron profile directory (`manhwa-studio`), application identifiers, installer product name, and updater endpoints are intentionally retained in this first pass. Changing those can create a second, apparently empty profile or interfere with upgrades. They will be migrated only with a separate application identity and a verified data-transfer/update plan.
+
+The Windows ICO master includes a 256×256 image and is shared by the Electron and Tauri Windows bundles. The SVG remains the scalable source for browser and in-app use.
