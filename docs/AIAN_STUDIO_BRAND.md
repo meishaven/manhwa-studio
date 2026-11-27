@@ -50,3 +50,9 @@ Use the same master mark across:
 - Keep existing localStorage keys that hold settings or data until a deliberate, tested migration exists. Branding changes must not silently reset the user's workspace.
 - The first AiAN Studio release should use a new application identity/update channel rather than attempting an automatic downgrade from the current Manhwa Studio 1.3.1 build.
 - The initial public AiAN Studio version is planned as 1.0.0 (Build 1); the current Manhwa Studio installation remains separate until the first AiAN installer is verified.
+
+## First implementation pass
+
+The vector master assets live in `docs/branding/` and are reused by the Electron, Tauri, and landing-app favicon paths. The Electron and Tauri window titles now display **AiAN Studio**.
+
+The legacy Electron profile directory (`manhwa-studio`), application identifiers, installer product name, and updater endpoints are intentionally retained in this first pass. Changing those can create a second, apparently empty profile or interfere with upgrades. They will be migrated only with a separate application identity and a verified data-transfer/update plan.
