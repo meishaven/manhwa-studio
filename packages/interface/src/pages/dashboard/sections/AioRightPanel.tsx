@@ -517,7 +517,7 @@ export default memo(function AioRightPanel({
                   !activeManualProgress ||
                   activeManualStageStatus === 'done'
                 }
-                title={t('dashboard.pipeline.skipStep.title')}
+                title={t(isManualTranslationStep ? 'dashboard.aio.skipTranslation' : 'dashboard.pipeline.skipStep.title')}
               >
                 {t(isManualTranslationStep ? 'dashboard.aio.skipTranslation' : 'dashboard.aio.skip')}
               </button>
@@ -787,8 +787,10 @@ export default memo(function AioRightPanel({
         <div className="koma-aio-info" role="status">
           <Paintbrush size={13} className="koma-aio-info__icon" />
           <span>
-            {t("dashboard.dashboardRegion.dockHint")}{' '}
-            {t('dashboard.aio.manualTranslationHint')}
+            {t("dashboard.dashboardRegion.dockHint")}
+            {isManualTranslationStep && (
+              <> {' '}{t('dashboard.aio.manualTranslationHint')}</>
+            )}
           </span>
         </div>
       )}
