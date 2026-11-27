@@ -139,7 +139,7 @@ const createNavGroups = (t: TranslateFn): NavGroup[] => [
       {
         mode: 'aio',
         icon: Zap,
-        label: t('dashboard.nav.subtitle.aio'),
+        label: t('dashboard.nav.short.aio'),
         subtitle: t('dashboard.nav.subtitle.aio'),
         tooltip: t('dashboard.nav.tooltip.aio'),
         hasSubMode: true,
@@ -154,7 +154,7 @@ const createNavGroups = (t: TranslateFn): NavGroup[] => [
       {
         mode: 'cleaner',
         icon: Eraser,
-        label: t('dashboard.nav.subtitle.cleaner'),
+        label: t('dashboard.nav.short.cleaner'),
         subtitle: t('dashboard.nav.subtitle.cleaner'),
         tooltip:
           t('dashboard.nav.tooltip.cleaner'),
@@ -291,7 +291,7 @@ function KomaZoomControls() {
   const setZoom = useUiShellStore((s) => s.setZoom);
   const { t } = useI18n();
   return (
-    <div className="panel-cut-sm flex items-center gap-0.5 bg-ink-3/70 px-1 py-0.5">
+    <div className="hidden panel-cut-sm items-center gap-0.5 bg-ink-3/70 px-1 py-0.5 xl:flex">
       <IconBtn label={t('dashboard.topbar.zoomOut')} onClick={() => setZoom(clamp(zoom - ZOOM_STEP, ZOOM_MIN, ZOOM_MAX))}>
         <ZoomOut size={12} />
       </IconBtn>
@@ -499,8 +499,8 @@ const KomaTopbarNoir = memo(function KomaTopbarNoir(props: KomaTopbarProps) {
 
         {/* ═══ NAVIGATION ═══ */}
         {!isCompactViewport ? (
-          <nav className="relative z-10 flex min-w-0 flex-1 items-center gap-1.5" role="tablist" onKeyDown={handleTablistArrowKeys} aria-label={t('dashboard.topbar.tools')}>
-            <div className="flex items-center gap-1">
+          <nav className="relative z-10 flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden" role="tablist" onKeyDown={handleTablistArrowKeys} aria-label={t('dashboard.topbar.tools')}>
+            <div className="flex min-w-0 shrink items-center gap-1">
               {primaryItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = mode === item.mode;
@@ -517,7 +517,7 @@ const KomaTopbarNoir = memo(function KomaTopbarNoir(props: KomaTopbarProps) {
                         data-tour={item.mode === 'aio' ? 'topbar-main-aio' : undefined}
                         onClick={() => handleModeChange(item.mode)}
                         className={cn(
-                          'panel-cut-sm group relative flex items-center gap-1.5 px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-wider transition-all duration-200',
+                          'panel-cut-sm group relative flex shrink-0 items-center gap-1.5 px-2 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-wider transition-all duration-200 2xl:px-3',
                           isActive
                             ? 'bg-crimson text-ink shadow-hard-paper'
                             : 'bg-ink-3/60 text-paper-dim hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-ink-3 hover:text-paper hover:shadow-hard-crimson',
@@ -526,7 +526,7 @@ const KomaTopbarNoir = memo(function KomaTopbarNoir(props: KomaTopbarProps) {
                       >
                         {isActive && <span className="h-1.5 w-1.5 bg-ink blink-noir" aria-hidden="true" />}
                         <Icon size={13} aria-hidden="true" />
-                        <span className="hidden lg:inline">{item.label}</span>
+                        <span className="hidden 2xl:inline">{item.label}</span>
                       </button>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="glass panel-cut-sm border-crimson/30">
