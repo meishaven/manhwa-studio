@@ -27,23 +27,23 @@ class DevicePayloadTests(unittest.TestCase):
             ),
         )
 
-        self.assertEqual(
-            payload,
-            {
-                "name": "Apple M3 Max",
-                "has_gpu": True,
-                "provider": "CoreMLExecutionProvider",
-                "available_providers": ["CoreMLExecutionProvider", "CPUExecutionProvider"],
-                "vram_gb": 36.0,
-                "profile": "apple-mps",
-                "fallback_reason": "coreml_only_for_onnx",
-                "supported_model_families": ["ocr", "translation", "detection"],
-                "nvidia_cuda_available": False,
-                "nvidia_tensorrt_available": False,
-                "intel_openvino_available": False,
-                "amd_rocm_available": False,
-            },
-        )
+        expected_payload = {
+            "name": "Apple M3 Max",
+            "has_gpu": True,
+            "provider": "CoreMLExecutionProvider",
+            "available_providers": ["CoreMLExecutionProvider", "CPUExecutionProvider"],
+            "vram_gb": 36.0,
+            "profile": "apple-mps",
+            "fallback_reason": "coreml_only_for_onnx",
+            "supported_model_families": ["ocr", "translation", "detection"],
+            "nvidia_cuda_available": False,
+            "nvidia_tensorrt_available": False,
+            "intel_openvino_available": False,
+            "amd_rocm_available": False,
+        }
+        for key, expected_value in expected_payload.items():
+            with self.subTest(field=key):
+                self.assertEqual(payload[key], expected_value)
 
 
 if __name__ == "__main__":
