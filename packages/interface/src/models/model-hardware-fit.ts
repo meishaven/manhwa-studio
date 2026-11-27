@@ -65,7 +65,16 @@ export function assessModelHardwareFit(
     };
   }
 
-  if (model.requirements.gpu && !device.has_gpu) {
+  const hasSupportedGpuRuntime =
+    device.has_gpu &&
+    (
+      device.nvidia_cuda_available === true ||
+      device.amd_rocm_available === true ||
+      device.profile === 'apple-mps' ||
+      (device.vram_gb !== null && device.vram_gb > 0)
+    );
+
+  if (model.requirements.gpu && !hasSupportedGpuRuntime) {
     return {
       status: 'avoid',
       reasonKey: 'modelHardware.reason.gpu',
