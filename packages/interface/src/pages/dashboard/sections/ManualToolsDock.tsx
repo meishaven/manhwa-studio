@@ -151,6 +151,12 @@ export default function ManualToolsDockSection({
   const manualToolsConfigOpen = useManualToolsStore(
     (s) => s.manualToolsConfigOpen,
   );
+  const manualDockCollapsed = useManualToolsStore(
+    (s) => s.manualDockCollapsed,
+  );
+  const setManualDockCollapsed = useManualToolsStore(
+    (s) => s.setManualDockCollapsed,
+  );
   const healingHintTrigger = useManualToolsStore((s) => s.healingHintTrigger);
   const typographyPresetState = useRegionEditorStore(
     (s) => s.typographyPresetState,
@@ -199,7 +205,7 @@ export default function ManualToolsDockSection({
     segmentToolHasConfig ||
     manualToolHasConfigActiveStage;
   const manualToolsConfigVisible =
-    manualDockVisible && manualToolsConfigOpen && activeDockToolHasConfig;
+    manualDockVisible && !manualDockCollapsed && manualToolsConfigOpen && activeDockToolHasConfig;
   const manualToolsConfigTitle = areaSelectionToolHasConfig
     ? t('dashboard.status.toolSelectArea')
     : segmentToolHasConfig
@@ -247,6 +253,8 @@ export default function ManualToolsDockSection({
       {manualDockVisible && (
         <DashboardManualDock
           manualDockRightOffset={manualDockRightOffset}
+          manualDockCollapsed={manualDockCollapsed}
+          setManualDockCollapsed={setManualDockCollapsed}
           manualToolsConfigVisible={manualToolsConfigVisible}
           manualToolsConfigTitle={manualToolsConfigTitle}
           setManualToolsConfigOpen={setManualToolsConfigOpen}

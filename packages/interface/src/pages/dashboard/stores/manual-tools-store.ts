@@ -24,6 +24,8 @@ interface ManualToolsStore {
   manualImageTool: ManualImageEditTool;
   /** Manual tools dock config drawer visibility. */
   manualToolsConfigOpen: boolean;
+  /** Manual tool rail visibility; collapsed keeps the canvas unobstructed. */
+  manualDockCollapsed: boolean;
   /** Manual image brush size. */
   manualImageBrushSize: number;
   /** Manual image paint color. */
@@ -50,6 +52,7 @@ interface ManualToolsStore {
       | boolean
       | ((prev: boolean) => boolean),
   ) => void;
+  setManualDockCollapsed: (value: boolean) => void;
   setManualImageBrushSize: (value: number) => void;
   setManualImagePaintColor: (value: string) => void;
   setManualImageBrushOpacity: (value: number) => void;
@@ -81,6 +84,7 @@ export const useManualToolsStore = create<ManualToolsStore>()(
       segmentBrushSize: 28,
       manualImageTool: 'none',
       manualToolsConfigOpen: true,
+      manualDockCollapsed: false,
       manualImageBrushSize: 26,
       manualImagePaintColor: '#ffffff',
       manualImageBrushOpacity: 1,
@@ -101,6 +105,8 @@ export const useManualToolsStore = create<ManualToolsStore>()(
           manualToolsConfigOpen:
             typeof value === 'function' ? value(state.manualToolsConfigOpen) : value,
         })),
+      setManualDockCollapsed: (manualDockCollapsed) =>
+        set({ manualDockCollapsed }),
       setManualImageBrushSize: (manualImageBrushSize) =>
         set({ manualImageBrushSize }),
       setManualImagePaintColor: (manualImagePaintColor) =>

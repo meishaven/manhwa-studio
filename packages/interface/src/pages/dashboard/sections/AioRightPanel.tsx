@@ -290,6 +290,10 @@ export default memo(function AioRightPanel({
       ? (s.aioManualProgressByImage[resolvedActiveId] ?? null)
       : null,
   );
+  const activeManualStageKey = activeManualProgress
+    ? (AIO_MANUAL_STAGE_ORDER[activeManualProgress.currentIndex] ?? null)
+    : null;
+  const isManualTranslationStep = activeManualStageKey === 'getTranslations';
   const aioDeviceInfo = useAioPipelineStore((s) => s.aioDeviceInfo);
   const aioMiniBackendRuntimeState = useAioPipelineStore(
     (s) => s.aioMiniBackendRuntimeState,
@@ -513,9 +517,9 @@ export default memo(function AioRightPanel({
                   !activeManualProgress ||
                   activeManualStageStatus === 'done'
                 }
-                title={t('dashboard.pipeline.skipStep.title')}
+                title={t(isManualTranslationStep ? 'dashboard.aio.skipTranslation' : 'dashboard.pipeline.skipStep.title')}
               >
-                {t('dashboard.aio.skip')}
+                {t(isManualTranslationStep ? 'dashboard.aio.skipTranslation' : 'dashboard.aio.skip')}
               </button>
             </div>
 
@@ -784,6 +788,9 @@ export default memo(function AioRightPanel({
           <Paintbrush size={13} className="koma-aio-info__icon" />
           <span>
             {t("dashboard.dashboardRegion.dockHint")}
+            {isManualTranslationStep && (
+              <> {' '}{t('dashboard.aio.manualTranslationHint')}</>
+            )}
           </span>
         </div>
       )}

@@ -146,7 +146,7 @@ const SidebarImageItem = React.memo(function SidebarImageItem({
           className={cn(
             'panel-cut-sm grid h-4 w-4 shrink-0 place-items-center border',
             isSelected
-              ? 'border-crimson bg-crimson text-ink'
+              ? 'border-azure bg-azure text-ink'
               : 'border-paper/25 bg-ink',
           )}
         >
@@ -208,7 +208,7 @@ const SidebarImageItem = React.memo(function SidebarImageItem({
     isActive
       ? 'bg-crimson/15 shadow-hard-crimson ring-1 ring-crimson/40'
       : 'bg-ink-3/60 hover:-translate-x-0.5 hover:bg-ink-3 hover:shadow-hard-paper',
-    selectionMode && isSelected && 'bg-crimson/10 ring-1 ring-crimson/70',
+    selectionMode && isSelected && 'bg-azure/15 ring-1 ring-azure/80 border-azure/40',
   );
   const rowDomPropsPresent = rowDomProps !== undefined;
   const legacyDomProps = rowDomProps;
