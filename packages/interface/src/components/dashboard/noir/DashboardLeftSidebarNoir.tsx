@@ -1,5 +1,4 @@
 import React from 'react';
-import { m, AnimatePresence } from 'framer-motion';
 import {
   Upload, Image as ImageIcon, Trash2, RotateCw, ArrowUp, ArrowDown,
   X, Check, ListChecks, PanelLeftOpen, ChevronLeft, ChevronRight, SkipBack, SkipForward, RefreshCcw, Database,
@@ -228,13 +227,8 @@ const SidebarImageItem = React.memo(function SidebarImageItem({
           {itemBody}
         </li>
       ) : (
-        <m.li
+        <li
           {...legacyDomProps}
-          layout
-          initial={{ opacity: 0, x: -12 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -12 }}
-          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
           onDragOver={dragHandlers.onDragOver}
           onDrop={dragHandlers.onDrop}
           onClick={() =>
@@ -243,7 +237,7 @@ const SidebarImageItem = React.memo(function SidebarImageItem({
           className={liClassName}
         >
           {itemBody}
-        </m.li>
+        </li>
       )}
     </>
   );
@@ -547,9 +541,7 @@ export default function DashboardLeftSidebarNoir({
                   </React.Fragment>
                 ))
               ) : (
-                <AnimatePresence initial={false}>
-                  {images.map((img) => renderImageItem(img))}
-                </AnimatePresence>
+                {images.map((img) => renderImageItem(img))}
               )}
             </ul>
           )}
