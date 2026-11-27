@@ -487,6 +487,9 @@ export const ModelManagerModalNoir = ({
                       {t(showRecommendedOnly ? 'modelHardware.showAll' : 'modelHardware.showFits')}
                     </button>
                   </div>
+                  <p className="mt-2 font-mono text-[9px] leading-relaxed text-paper/35">
+                    {t('modelHardware.estimateNote')}
+                  </p>
                 </>
               ) : (
                 <p className="mt-3 border border-dashed border-paper/15 p-3 font-mono text-[10px] text-paper/50">
