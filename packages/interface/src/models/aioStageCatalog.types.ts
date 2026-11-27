@@ -36,6 +36,13 @@ export interface AioDeviceInfo {
   has_gpu: boolean;
   provider: string;
   vram_gb: number | null;
+  /** Host CPU and memory facts returned by /device/info. */
+  cpu_name?: string | null;
+  cpu_cores?: number | null;
+  cpu_threads?: number | null;
+  ram_total_gb?: number | null;
+  ram_available_gb?: number | null;
+  architecture?: string | null;
   profile?: string | null;
   fallback_reason?: string | null;
   available_providers?: string[];

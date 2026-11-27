@@ -18,6 +18,7 @@ if str(MINI_BACKEND_DIR) not in sys.path:
 
 IMPORT_ERROR: Exception | None = None
 try:
+    from core import device as device_module
     import app as mini_app
 except Exception as exc:  # pragma: no cover - optional runtime deps
     IMPORT_ERROR = exc
@@ -46,7 +47,18 @@ class DeviceInfoRouteTests(unittest.TestCase):
             supported_model_families=("ocr", "detection", "enhance", "inpainting", "translation"),
         )
 
-        with patch.object(mini_app, "get_device_info", return_value=fake_device):
+        hardware = {
+            "cpu_name": "Intel Core i5",
+            "cpu_cores": 4,
+            "cpu_threads": 4,
+            "ram_total_gb": 8.0,
+            "ram_available_gb": 5.5,
+            "architecture": "AMD64",
+        }
+        with (
+            patch.object(mini_app, "get_device_info", return_value=fake_device),
+            patch.object(device_module, "_host_hardware_payload", return_value=hardware),
+        ):
             response = client.get("/device/info")
 
         self.assertEqual(response.status_code, 200)
@@ -66,6 +78,7 @@ class DeviceInfoRouteTests(unittest.TestCase):
                 "nvidia_tensorrt_available": False,
                 "intel_openvino_available": False,
                 "amd_rocm_available": False,
+                **hardware,
             },
         )
 
