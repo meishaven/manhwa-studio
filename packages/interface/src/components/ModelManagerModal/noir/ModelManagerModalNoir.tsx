@@ -468,9 +468,6 @@ export const ModelManagerModalNoir = ({
                         {t('modelHardware.fit.recommended')}
                       </div>
                       <p className="text-xs font-semibold text-mint">{hardwareFitCounts.recommended}</p>
-                      <p className="mt-0.5 font-mono text-[9px] text-paper/45">
-                        {t('modelHardware.summary', hardwareFitCounts)}
-                      </p>
                     </div>
                   </div>
                   <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
