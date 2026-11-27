@@ -9,14 +9,14 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
-from core import device as device_module
-
 
 os.environ["MINI_BACKEND_WARMUP_DETECTOR"] = "0"
 
 MINI_BACKEND_DIR = Path(__file__).resolve().parents[1]
 if str(MINI_BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(MINI_BACKEND_DIR))
+
+from core import device as device_module
 
 IMPORT_ERROR: Exception | None = None
 try:
