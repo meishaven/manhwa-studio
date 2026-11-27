@@ -145,8 +145,8 @@ export const useAioPipelineStore = create<AioPipelineStore>()((set, get) => {
       target: [...TARGET_LANGUAGE_OPTIONS],
     },
 
-    aioSrcLang: 'ja',
-    aioTgtLang: 'pt-br',
+    aioSrcLang: 'ko',
+    aioTgtLang: 'en',
     aioOptionsLoading: false,
     aioPresetState: loadValidatedPresetState(),
     // Dead value by design: openCreate/openEdit replace it before the editor opens.

@@ -73,7 +73,7 @@ export const renderSettingsGeneralTabNoir = ({
   maskedDest, travelExpires, travelDuration, travelBusy, emailDeliveryEnabled,
   handleTravel, travelBlocked, travelFeedback, travelMeta, fmtDate, travelDaysLabel, travelError,
   currentTheme, setCurrentTheme, currentFamily, setCurrentFamily,
-  locale, localeLabels, setLocale, supportedLocales, systemLocales,
+  localeLabels,
   toolTipsEnabled, setToolTipsEnabled,
   customCursorEnabled, setCustomCursorEnabled,
   localResetBusy, handleResetLocalAppSettings, localResetFeedback,
@@ -164,22 +164,11 @@ export const renderSettingsGeneralTabNoir = ({
       </div>
     </Sec>
 
-    <Sec icon={<Globe2 size={14} />} title={t("settings.language.title")} desc={t("settings.language.description")}>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label={t("settings.language.label")}>
-          <select className={selectCls} value={locale} onChange={(e) => setLocale(e.target.value as typeof locale)}>
-            {supportedLocales.map((entry) => <option key={entry} value={entry}>{localeLabels[entry]}</option>)}
-          </select>
-        </Field>
-        <Field label={t("settings.language.systemLabel")}>
-          <p className="py-2 font-mono text-[11px] text-paper/60">
-            {systemLocales.length > 0
-              ? systemLocales.map((entry) => localeLabels[entry]).join(", ")
-              : localeLabels[locale]}
-          </p>
-        </Field>
+    <Sec icon={<Globe2 size={14} />} title={t("settings.language.title")} desc="English is fixed for now; system language is ignored.">
+      <div className="flex items-center justify-between border border-paper/12 bg-ink/50 px-3 py-2.5">
+        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-paper/45">{t("settings.language.label")}</span>
+        <span className="font-mono text-xs font-semibold tracking-wide text-mint">{localeLabels.en}</span>
       </div>
-      <p className="mt-3 font-mono text-[9px] uppercase tracking-wider text-paper/30">{t("settings.language.applied")}</p>
     </Sec>
 
     <Sec icon={<Palette size={14} />} title={t("settings.theme.styleLabel")} desc={t("settings.theme.styleDescription")}>

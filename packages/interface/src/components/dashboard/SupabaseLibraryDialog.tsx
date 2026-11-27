@@ -405,11 +405,18 @@ export default function SupabaseLibraryDialog({
                   value={selectedSeriesId}
                   onChange={(event) => void selectSeries(event.target.value)}
                   disabled={busy !== null}
-                  className="w-full rounded-md border border-[var(--border)] bg-[var(--panel-bg)] px-3 py-2 text-sm"
+                  style={{ colorScheme: "dark" }}
+                  className="w-full rounded-md border border-[var(--border)] bg-[var(--panel-bg)] px-3 py-2 text-sm text-[var(--text-primary)]"
                 >
-                  <option value="">Select a series…</option>
+                  <option value="" style={{ backgroundColor: "var(--panel-bg)", color: "var(--text-primary)" }}>Select a series…</option>
                   {series.map((item) => (
-                    <option key={item.id} value={item.id}>{item.title.replace(/[-_]+/g, " ").replace(/\b([a-z])/g, (letter) => letter.toUpperCase())}</option>
+                    <option
+                      key={item.id}
+                      value={item.id}
+                      style={{ backgroundColor: "var(--panel-bg)", color: "var(--text-primary)" }}
+                    >
+                      {item.title.replace(/[-_]+/g, " ").replace(/\b([a-z])/g, (letter) => letter.toUpperCase())}
+                    </option>
                   ))}
                 </select>
               </label>
@@ -419,11 +426,16 @@ export default function SupabaseLibraryDialog({
                   value={selectedChapterId}
                   onChange={(event) => setSelectedChapterId(event.target.value)}
                   disabled={!selectedSeriesId || busy !== null}
-                  className="w-full rounded-md border border-[var(--border)] bg-[var(--panel-bg)] px-3 py-2 text-sm"
+                  style={{ colorScheme: "dark" }}
+                  className="w-full rounded-md border border-[var(--border)] bg-[var(--panel-bg)] px-3 py-2 text-sm text-[var(--text-primary)]"
                 >
-                  <option value="">Select a chapter…</option>
+                  <option value="" style={{ backgroundColor: "var(--panel-bg)", color: "var(--text-primary)" }}>Select a chapter…</option>
                   {chapters.map((item) => (
-                    <option key={item.id} value={String(item.id)}>
+                    <option
+                      key={item.id}
+                      value={String(item.id)}
+                      style={{ backgroundColor: "var(--panel-bg)", color: "var(--text-primary)" }}
+                    >
                       {item.title || ("Chapter " + (item.chapter_number ?? item.id))} · {item.page_count ?? "?"} pages
                     </option>
                   ))}

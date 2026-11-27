@@ -22,6 +22,7 @@ Object.defineProperty(window, 'localStorage', {
 });
 
 const { useAioPipelineStore } = await import('@/pages/dashboard/stores/aio-pipeline-store');
+const { useTranslatorStore } = await import('@/pages/dashboard/stores/translator-store');
 const { GPU_STAGES_STORAGE_KEY } = await import(
   '@/pages/dashboard/stores/aio-pipeline-storage'
 );
@@ -31,6 +32,13 @@ const AIO_CLEAN_AI_MODEL_STORAGE_KEY = 'koma-aio-clean-ai-model';
 const AIO_CLEAN_AI_INSTRUCTIONS_STORAGE_KEY = 'koma-aio-clean-ai-instructions';
 
 describe('useAioPipelineStore', () => {
+  it('defaults both translation workspaces to Korean → English', () => {
+    expect(useAioPipelineStore.getState().aioSrcLang).toBe('ko');
+    expect(useAioPipelineStore.getState().aioTgtLang).toBe('en');
+    expect(useTranslatorStore.getState().srcLang).toBe('ko');
+    expect(useTranslatorStore.getState().tgtLang).toBe('en');
+  });
+
   beforeEach(() => {
     storageMap.clear();
     useAioPipelineStore.setState({

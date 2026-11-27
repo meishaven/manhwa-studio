@@ -93,8 +93,8 @@ export const useTranslatorStore = create<TranslatorStore>()(
   devtools(
     (set) => ({
       // Same initial values the page's useState had.
-      srcLang: 'ja',
-      tgtLang: 'pt-br',
+      srcLang: 'ko',
+      tgtLang: 'en',
       translatorWorkspaceMode: 'text',
       translatorVisualProcessingMode: 'standard',
       translatorDraftText: '',
