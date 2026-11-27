@@ -682,7 +682,7 @@ def create_app(settings: LocalApiSettings) -> FastAPI:
         return {"healthy": True}
 
     @app.get("/device/info")
-    async def device_info() -> dict[str, str | bool | float | None | list[str]]:
+    async def device_info() -> dict[str, str | bool | int | float | None | list[str]]:
         return build_device_payload(get_device_info())
 
     @app.get("/memory/stats")
