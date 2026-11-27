@@ -16,10 +16,9 @@ MINI_BACKEND_DIR = Path(__file__).resolve().parents[1]
 if str(MINI_BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(MINI_BACKEND_DIR))
 
-from core import device as device_module
-
 IMPORT_ERROR: Exception | None = None
 try:
+    from core import device as device_module
     import app as mini_app
 except Exception as exc:  # pragma: no cover - optional runtime deps
     IMPORT_ERROR = exc
