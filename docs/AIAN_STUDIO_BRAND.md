@@ -55,6 +55,8 @@ Use the same master mark across:
 
 The vector master assets live in `docs/branding/` and are reused by the Electron, Tauri, and landing-app favicon paths. The Electron and Tauri window titles now display **AiAN Studio**.
 
-The legacy Electron profile directory (`manhwa-studio`), application identifiers, installer product name, and updater endpoints are intentionally retained in this first pass. Changing those can create a second, apparently empty profile or interfere with upgrades. They will be migrated only with a separate application identity and a verified data-transfer/update plan.
+The first AiAN Windows installer uses the distinct application identity `com.aian-studio.desktop` and the product name **AiAN Studio**. Electron startup deliberately keeps `app.setName("manhwa-studio")`, preserving the existing user-data directory (models, preferences, workspaces, and the saved Supabase connection). The new app therefore installs separately from Manhwa Studio while reusing the existing profile. Because both applications share that profile during this transition, do not run both copies at the same time.
+
+The updater feed temporarily remains on the current `meishaven/manhwa-studio` repository. Move it to the standalone AiAN repository when that repository is created; the first AiAN release is version `1.0.0`, separate from the installed Manhwa Studio `1.3.1` line.
 
 The Windows ICO master includes a 256×256 image and is shared by the Electron and Tauri Windows bundles. The SVG remains the scalable source for browser and in-app use.
