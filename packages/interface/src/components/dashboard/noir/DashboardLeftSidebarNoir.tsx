@@ -541,7 +541,7 @@ export default function DashboardLeftSidebarNoir({
                   </React.Fragment>
                 ))
               ) : (
-                {images.map((img) => renderImageItem(img))}
+                images.map((img) => renderImageItem(img))
               )}
             </ul>
           )}
