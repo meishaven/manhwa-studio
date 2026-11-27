@@ -91,7 +91,7 @@ beforeEach(() => {
           id: 'preset-1',
           name: 'Manga default',
           description: '',
-          sourceLanguage: 'ja',
+          sourceLanguage: 'ko',
           stageModels: {
             detectText: 'font_rtdetr_v2',
             recognizeText: 'manga_ocr',
