@@ -35,6 +35,14 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 const isOptionalBoolean = (value: unknown): value is boolean | undefined =>
   value === undefined || typeof value === 'boolean';
 
+const isOptionalFiniteNumber = (value: unknown): value is number | null | undefined =>
+  value === undefined || value === null || (
+    typeof value === 'number' && Number.isFinite(value) && value >= 0
+  );
+
+const isOptionalString = (value: unknown): value is string | null | undefined =>
+  value === undefined || value === null || typeof value === 'string';
+
 /**
  * Matches the `/device/info` payload (mini-backend `build_device_payload`).
  * Unknown backend fields are stripped; `vram_gb`/`profile`/`fallback_reason`
@@ -65,7 +73,13 @@ const parseAioDeviceInfo = (value: unknown): AioDeviceInfo => {
     !isOptionalBoolean(value.nvidia_cuda_available) ||
     !isOptionalBoolean(value.nvidia_tensorrt_available) ||
     !isOptionalBoolean(value.intel_openvino_available) ||
-    !isOptionalBoolean(value.amd_rocm_available)
+    !isOptionalBoolean(value.amd_rocm_available) ||
+    !isOptionalString(value.cpu_name) ||
+    !isOptionalFiniteNumber(value.cpu_cores) ||
+    !isOptionalFiniteNumber(value.cpu_threads) ||
+    !isOptionalFiniteNumber(value.ram_total_gb) ||
+    !isOptionalFiniteNumber(value.ram_available_gb) ||
+    !isOptionalString(value.architecture)
   ) {
     throw new Error('Invalid AIO device info payload.');
   }
@@ -76,6 +90,13 @@ const parseAioDeviceInfo = (value: unknown): AioDeviceInfo => {
     provider: value.provider,
     vram_gb: value.vram_gb,
   };
+
+  if (value.cpu_name !== undefined) info.cpu_name = value.cpu_name;
+  if (value.cpu_cores !== undefined) info.cpu_cores = value.cpu_cores;
+  if (value.cpu_threads !== undefined) info.cpu_threads = value.cpu_threads;
+  if (value.ram_total_gb !== undefined) info.ram_total_gb = value.ram_total_gb;
+  if (value.ram_available_gb !== undefined) info.ram_available_gb = value.ram_available_gb;
+  if (value.architecture !== undefined) info.architecture = value.architecture;
 
   if (typeof value.profile === 'string' || value.profile === null) {
     info.profile = value.profile;
