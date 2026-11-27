@@ -583,9 +583,9 @@ const KomaTopbarClassic = memo(function KomaTopbarClassic(props: KomaTopbarProps
                 >
                   <div className="koma-brand__text">
                     <div className="koma-brand__title">
-                      {t('brand.name')}
+                      AiAN
                       <span className="koma-brand__studio-wrap">
-                        {t('brand.studioSuffix')}
+                        Studio
                         <VersionBadge />
                       </span>
                     </div>

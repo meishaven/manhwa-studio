@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { m, useReducedMotion } from "framer-motion";
 import loginBackgroundVideo from "@koma/ui/assets/login-background.mp4";
 import loginBackgroundPoster from "@koma/ui/assets/login-background-poster.webp";
-import { Hanko, PrintTicks } from "./koma-ui";
+import { PrintTicks } from "./koma-ui";
 import { useDecorativeMediaDelay } from "../useDecorativeMediaDelay";
 import { LegalInlineLinks } from "../../legal/LegalInlineLinks";
 import { ThemeFamilySwitch } from "../ThemeFamilySwitch";
@@ -53,10 +53,10 @@ export const AuthShellNoir = ({ activeTab, onSelectLogin, onSelectRegister, subt
 
           <div className="glass panel-cut relative p-7 sm:p-9">
             <header className="mb-7 flex items-start gap-4">
-              <Hanko />
+              <img src="/aian-mark.svg" alt="" className="h-12 w-12 shrink-0 rounded-xl object-contain" />
               <div>
                 <h1 className="font-display text-[27px] font-black uppercase leading-none tracking-tight text-paper">
-                  Koma{" "}
+                  AiAN{" "}
                   <span className="font-accent font-normal normal-case italic tracking-normal text-crimson">
                     Studio
                   </span>
@@ -130,11 +130,11 @@ export const AuthShellNoir = ({ activeTab, onSelectLogin, onSelectRegister, subt
         <div className="absolute bottom-16 -left-16 h-80 w-80 rounded-full bg-azure/10 blur-[120px]" />
 
         <span className="text-outline absolute -top-10 left-8 select-none font-display text-[10rem] font-black leading-none tracking-tighter xl:text-[13rem]">
-          KOMA
+          AiAN
         </span>
 
         <span className="v-text absolute right-7 top-24 font-display text-sm font-bold tracking-[0.55em] text-paper/25">
-          コマ・スタジオ — 漫画工房 — 第二版
+          AIAN STUDIO — COMIC TRANSLATION WORKSPACE
         </span>
 
         <span className="absolute bottom-44 right-14 -rotate-12 select-none font-display text-7xl font-black text-crimson/15">
