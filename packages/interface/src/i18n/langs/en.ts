@@ -1112,6 +1112,7 @@ export const enMessages = {
   'modelHardware.reason.unspecifiedRam': 'The catalogue does not provide a numeric RAM requirement, so this model needs manual checking.',
   'modelHardware.reason.cpu': 'This model may be slow on a {cores}-core CPU.',
   'modelHardware.summary': '{good} good fits · {caution} may be slow · {avoid} not recommended',
+  'modelHardware.estimateNote': 'Compatibility is estimated from declared model requirements and this PC’s available resources. Real speed also depends on image size and other running apps.',
   'modelHardware.status.refreshing': 'Refreshing hardware profile…',
   'modelManager.modal.aioFallback': 'AIO',
   'modelCard.recommended': 'REC',
