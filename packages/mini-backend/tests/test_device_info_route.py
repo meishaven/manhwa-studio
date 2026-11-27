@@ -9,6 +9,8 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
+from core import device as device_module
+
 
 os.environ["MINI_BACKEND_WARMUP_DETECTOR"] = "0"
 
@@ -46,7 +48,18 @@ class DeviceInfoRouteTests(unittest.TestCase):
             supported_model_families=("ocr", "detection", "enhance", "inpainting", "translation"),
         )
 
-        with patch.object(mini_app, "get_device_info", return_value=fake_device):
+        hardware = {
+            "cpu_name": "Intel Core i5",
+            "cpu_cores": 4,
+            "cpu_threads": 4,
+            "ram_total_gb": 8.0,
+            "ram_available_gb": 5.5,
+            "architecture": "AMD64",
+        }
+        with (
+            patch.object(mini_app, "get_device_info", return_value=fake_device),
+            patch.object(device_module, "_host_hardware_payload", return_value=hardware),
+        ):
             response = client.get("/device/info")
 
         self.assertEqual(response.status_code, 200)
@@ -66,6 +79,7 @@ class DeviceInfoRouteTests(unittest.TestCase):
                 "nvidia_tensorrt_available": False,
                 "intel_openvino_available": False,
                 "amd_rocm_available": False,
+                **hardware,
             },
         )
 
