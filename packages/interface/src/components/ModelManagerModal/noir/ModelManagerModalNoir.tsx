@@ -417,11 +417,11 @@ export const ModelManagerModalNoir = ({
                   <button
                     type="button"
                     onClick={() => void refreshHardware()}
-                  disabled={hardwareLoading}
-                  className="inline-flex items-center gap-1.5 border border-paper/15 px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-wider text-paper/65 hover:text-paper disabled:opacity-40"
-                >
-                  <RefreshCw size={11} className={hardwareLoading ? 'animate-spin' : ''} />
-                  {t(hardwareLoading ? 'modelHardware.status.refreshing' : 'modelHardware.refresh')}
+                    disabled={hardwareLoading}
+                    className="inline-flex items-center gap-1.5 border border-paper/15 px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-wider text-paper/65 hover:text-paper disabled:opacity-40"
+                  >
+                    <RefreshCw size={11} className={hardwareLoading ? 'animate-spin' : ''} />
+                    {t(hardwareLoading ? 'modelHardware.status.refreshing' : 'modelHardware.refresh')}
                   </button>
                 </div>
               </div>
