@@ -31,6 +31,11 @@ const AIO_CLEAN_AI_MODEL_STORAGE_KEY = 'koma-aio-clean-ai-model';
 const AIO_CLEAN_AI_INSTRUCTIONS_STORAGE_KEY = 'koma-aio-clean-ai-instructions';
 
 describe('useAioPipelineStore', () => {
+  it('defaults the AIO translation direction to Korean → English', () => {
+    expect(useAioPipelineStore.getState().aioSrcLang).toBe('ko');
+    expect(useAioPipelineStore.getState().aioTgtLang).toBe('en');
+  });
+
   beforeEach(() => {
     storageMap.clear();
     useAioPipelineStore.setState({
@@ -46,6 +51,8 @@ describe('useAioPipelineStore', () => {
       aioAutoHistoryAvailable: false,
       aioAutoProcessedImageById: {},
       aioManualProgressByImage: {},
+      aioSrcLang: 'ko',
+      aioTgtLang: 'en',
     });
   });
 
