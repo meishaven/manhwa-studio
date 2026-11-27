@@ -1,5 +1,4 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState, forwardRef, type ReactNode } from 'react';
-import { m, AnimatePresence } from 'framer-motion';
 import {
   PanelLeftOpen,
   PanelRightClose,
@@ -140,7 +139,7 @@ const createNavGroups = (t: TranslateFn): NavGroup[] => [
       {
         mode: 'aio',
         icon: Zap,
-        label: t('dashboard.nav.short.aio'),
+        label: t('dashboard.nav.subtitle.aio'),
         subtitle: t('dashboard.nav.subtitle.aio'),
         tooltip: t('dashboard.nav.tooltip.aio'),
         hasSubMode: true,
@@ -155,7 +154,7 @@ const createNavGroups = (t: TranslateFn): NavGroup[] => [
       {
         mode: 'cleaner',
         icon: Eraser,
-        label: t('dashboard.nav.short.cleaner'),
+        label: t('dashboard.nav.subtitle.cleaner'),
         subtitle: t('dashboard.nav.subtitle.cleaner'),
         tooltip:
           t('dashboard.nav.tooltip.cleaner'),
@@ -490,10 +489,7 @@ const KomaTopbarNoir = memo(function KomaTopbarNoir(props: KomaTopbarProps) {
 
   return (
     <TooltipProvider delayDuration={200}>
-      <m.header
-        initial={{ y: -24, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      <header
         className="relative z-40 flex h-14 items-center gap-3 border-b-2 border-crimson/30 bg-ink-2/80 px-3 backdrop-blur-xl"
       >
         {/* halftone strip decoration */}
@@ -765,11 +761,10 @@ const KomaTopbarNoir = memo(function KomaTopbarNoir(props: KomaTopbarProps) {
             onLogout={onLogout}
           />
         </div>
-      </m.header>
+      </header>
 
       {/* ═══ Mobile Drawer ═══ */}
-      <AnimatePresence>
-        {mobileNavOpen && (
+      {mobileNavOpen && (
           <KomaMobileDrawerNoir
             open={mobileNavOpen}
             navGroups={navGroups}
@@ -779,8 +774,7 @@ const KomaTopbarNoir = memo(function KomaTopbarNoir(props: KomaTopbarProps) {
             userDisplayEmail={userDisplayEmail}
             onClose={() => setMobileNavOpen(false)}
           />
-        )}
-      </AnimatePresence>
+      )}
     </TooltipProvider>
   );
 });

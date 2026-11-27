@@ -3,10 +3,10 @@ export interface CustomCursorSettings {
 }
 
 export const CUSTOM_CURSOR_SETTINGS_STORAGE_KEY =
-  'koma-studio.custom-cursor.v1';
+  'koma-studio.custom-cursor.v2';
 
 export const DEFAULT_CUSTOM_CURSOR_SETTINGS: CustomCursorSettings = {
-  enabled: true,
+  enabled: false,
 };
 
 export const sanitizeCustomCursorSettings = (
