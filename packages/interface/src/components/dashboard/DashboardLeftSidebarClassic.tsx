@@ -439,12 +439,12 @@ export default function DashboardLeftSidebarClassic({
     >
       <div className="koma-sidebar__top">
         <div className="koma-brand">
-          <div className="koma-brand__icon"><Layers size={18} /></div>
+          <img src="/aian-mark.svg" alt="" className="h-9 w-9 shrink-0 rounded-xl object-contain" />
           <div className="koma-brand__text">
             <div className="koma-brand__title">
-              {t('brand.name')}
+              AiAN
               <span className="koma-brand__studio-wrap">
-                {t('brand.studioSuffix')}
+                Studio
                 <VersionBadge />
               </span>
             </div>

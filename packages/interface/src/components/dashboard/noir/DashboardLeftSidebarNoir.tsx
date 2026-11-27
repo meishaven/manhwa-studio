@@ -14,7 +14,6 @@ import {
   usePageDragReorder,
   type SidebarPageDragHandlers,
 } from '../DashboardLeftSidebarPageDragGuide';
-import { KomaMascotBadgeNoir } from './KomaMascotBadgeNoir';
 import { cn, formatImageDimensions } from '../../../utils/dashboard.utils';
 import { revokeLoadedImageUrls } from '../../../utils/imagePerformance';
 import { EMPTY_REGION_LIST } from '../../../utils/regionMapGating';
@@ -389,12 +388,12 @@ export default function DashboardLeftSidebarNoir({
 
       <div className="relative z-10 border-b border-paper/10 p-3">
         <div className="flex items-center gap-2.5">
-          <KomaMascotBadgeNoir />
+          <img src="/aian-mark.svg" alt="" className="h-9 w-9 shrink-0 rounded-xl object-contain" />
           <div className="min-w-0 flex-1 leading-none">
             <div className="flex flex-wrap items-center gap-1.5">
               <span className="font-display text-[14px] font-black uppercase tracking-tight text-paper">
-                {t('brand.name')}
-                <span className="font-serif-accent italic text-crimson"> {t('brand.studioSuffix')}</span>
+                AiAN
+                <span className="font-serif-accent italic text-crimson"> Studio</span>
               </span>
             </div>
             <VersionBadge />

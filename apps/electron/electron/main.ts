@@ -13,10 +13,9 @@ import path from "node:path";
 import { spawn } from "node:child_process";
 import type { DesktopOpenLogsFolderResult } from "../../../packages/types/src/desktop-api.ts";
 
-// Monorepo: the package was renamed to @koma/electron, but Electron's userData
-// directory is derived from the package name — pin it to "koma-studio" to
-// preserve the existing user profile (models, device-id, settings) under
-// %APPDATA%.
+// Keep the legacy profile path so existing Manhwa Studio users retain models,
+// settings, workspace data, and saved connections under %APPDATA%.
+// Do not change this until a separate, tested profile migration is shipped.
 app.setName("manhwa-studio");
 
 import { randomBytes } from "node:crypto";
@@ -645,7 +644,7 @@ const createWindow = async (): Promise<void> => {
     ...restoredBrowserWindowOptions(restoredPlacement),
     minWidth: 1024,
     minHeight: 720,
-    title: "Manhwa Studio",
+    title: "AiAN Studio",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,

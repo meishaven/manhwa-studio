@@ -233,7 +233,7 @@ export const enMessages = {
   'settings.theme.styleLabel': 'Theme style',
   'settings.theme.styleDescription': 'Choose the design system applied across the interface.',
   'settings.theme.family.classic': 'Classic',
-  'settings.theme.family.classicDesc': 'Original KŌMA design (legacy)',
+  'settings.theme.family.classicDesc': 'Original Classic design (legacy)',
   'settings.theme.family.noir': 'Noir',
   'settings.theme.family.noirDesc': 'Editorial manga noir redesign',
   'settings.language.title': 'Interface language',
@@ -319,7 +319,7 @@ export const enMessages = {
   'login.travel.eyebrow': 'Security checkpoint',
   'login.travel.title': 'This computer needs temporary authorization',
   'login.travel.copy':
-    'Open KŌMA Studio on your main PC and go to Settings > Travel Access to send the code and complete this sign-in.',
+    'Open AiAN Studio on your main PC and go to Settings > Travel Access to send the code and complete this sign-in.',
   'login.travel.accountInUse': 'Account in use: {email}',
   'login.travel.sameAccount':
     'Use the same account already open on your main PC.',
@@ -593,7 +593,7 @@ export const enMessages = {
   'aio.batch.failed.notify.title': 'AIO batch failed',
   'aio.batch.failed.notify.body':
     'An error interrupted the batch. Check the status panel for details.',
-  'desktop.closeGuard.title': 'Close KŌMA?',
+  'desktop.closeGuard.title': 'Close AiAN Studio?',
   'desktop.closeGuard.body':
     'There are unsaved changes or a batch is running. Closing now may lose unsaved changes or interrupt the batch.',
   'desktop.closeGuard.closeAnyway': 'Close anyway',
@@ -927,7 +927,7 @@ export const enMessages = {
   'dashboard.aio.render.hintRot': 'Shortcut: ',
   'dashboard.aio.render.hintRotSuffix': ' to rotate.',
   'settings.typographerLibrary.noFolder': 'No folder',
-  'settings.profile.defaultUser': 'KŌMA User',
+  'settings.profile.defaultUser': 'AiAN User',
   'register.email': 'Email',
   'register.emailPlaceholder': 'you@email.com',
   'feed.sidebar.webhookPlaceholder': 'https://discord.com/api/webhooks/...',
@@ -1635,7 +1635,7 @@ export const enMessages = {
   'resources.action.visit': 'Visit',
   'resources.externalTools.title': 'External Tools',
   'resources.externalTools.desc':
-    'Recommended software and apps that complement KŌMA Studio in your scanlation workflow.',
+    'Recommended software and apps that complement AiAN Studio in your scanlation workflow.',
   'resources.category.editing': 'Editing',
   'resources.category.ocr': 'OCR',
   'resources.category.translation': 'Translation',
@@ -2095,7 +2095,7 @@ export const enMessages = {
   'dashboard.topbar.scanlationFeed': 'Scanlation Feed',
   'dashboard.topbar.rankings': 'Rankings',
   'dashboard.topbar.logout': 'Sign out',
-  'dashboard.topbar.brand': 'KŌMA Studio',
+  'dashboard.topbar.brand': 'AiAN Studio',
   'dashboard.topbar.autoManualBadge': 'A/M',
   'dashboard.topbar.zoomOut': 'Zoom out',
   'dashboard.topbar.zoomIn': 'Zoom in',
@@ -2658,7 +2658,7 @@ export const enMessages = {
   'guides.common.advanced': 'Advanced',
   'guides.home.title': 'Guides & Tutorials',
   'guides.home.description':
-    'Learn to master every tool in KŌMA Studio with step-by-step guides, productivity tips, and real-world examples.',
+    'Learn to master every tool in AiAN Studio with step-by-step guides, productivity tips, and real-world examples.',
   'guides.home.searchPlaceholder': 'Search guides, shortcuts, tips...',
   'guides.home.searchAria': 'Search guides',
   'guides.home.continueReading': 'Continue where you left off',
@@ -3173,7 +3173,7 @@ export const enMessages = {
   'dashboard.cleaner.ai.defaultProvider': 'Cloud / API / AI',
   'bugReport.screenshot.alt': 'Screenshot',
   'pageTransition.loading.ariaLabel': 'Loading',
-  'watermark.text.placeholder': 'KŌMA Studio',
+  'watermark.text.placeholder': 'AiAN Studio',
   'watermark.logo.alt': 'Logo',
   'dashboard.textDetection.regionActions.aria': 'Region actions',
   'dashboard.textDetection.manualModeRequired': 'Manual mode required',
@@ -4066,7 +4066,7 @@ export const enMessages = {
   'renderPreview.iconVertical': 'V',
   'renderPreview.iconCircular': '◯',
   'guides.home.searchShortcut': '⌘K',
-  'brand.name': 'KŌMA',
+  'brand.name': 'AiAN',
   'brand.studioSuffix': 'Studio',
   'versionBadge.stable': 'STABLE',
   'versionBadge.beta': 'BETA',
@@ -4098,7 +4098,7 @@ export const enMessages = {
   'dashboard.tour.preview.upload.formats':
     'JPG · PNG · WEBP · ZIP · PDF · CBZ · CB7 · PSD',
   'dashboard.tour.preview.stageEmpty': 'Load images to get started',
-  'dashboard.tour.welcome.title': 'Welcome to the KŌMA Studio Dashboard',
+  'dashboard.tour.welcome.title': 'Welcome to the AiAN Studio Dashboard',
   'dashboard.tour.welcome.body':
     'This tour walks you through the main app flow: organizing pages, choosing modes, configuring the AIO pipeline, and exporting results without having to guess where each feature is.',
   'dashboard.tour.sidebar.title': 'Sidebar: quota, files, and batch context',
@@ -4718,7 +4718,7 @@ export const enMessages = {
   'common.editorialDescription': "Editorial Description",
   'common.removeValue': "Remove {value}",
   'settings.integrations.discordWebhook': "Discord Webhook",
-  'discord.presence.appName': "KŌMA Studio",
+  'discord.presence.appName': "AiAN Studio",
   'discord.presence.button.website': "Website",
   'discord.presence.button.download': "Download",
   'discord.presence.idle.details': "Exploring scanlation tools",

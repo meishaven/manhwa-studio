@@ -1,6 +1,6 @@
 import { m, useReducedMotion } from "framer-motion";
 import { ReactNode } from "react";
-import { Hanko, PrintTicks } from "./koma-ui";
+import { PrintTicks } from "./koma-ui";
 import { useI18n } from "../../../i18n";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -21,10 +21,10 @@ export const AuthSimpleShellNoir = ({ title, accent, subtitle, children }: AuthS
         <div aria-hidden className="halftone absolute inset-0 opacity-40" />
         <div aria-hidden className="absolute -top-24 right-1/4 h-96 w-96 rounded-full bg-crimson/10 blur-[130px]" />
         <span aria-hidden className="text-outline absolute -bottom-8 left-6 select-none font-display text-[9rem] font-black leading-none tracking-tighter">
-          コマ
+          AiAN
         </span>
         <span aria-hidden className="v-text absolute right-6 top-20 font-display text-xs font-bold tracking-[0.5em] text-paper/20">
-          コマ・スタジオ — 認証
+          AIAN STUDIO — AUTHENTICATION
         </span>
 
         <m.section
@@ -36,7 +36,7 @@ export const AuthSimpleShellNoir = ({ title, accent, subtitle, children }: AuthS
           <PrintTicks />
           <div className="glass panel-cut relative p-7 sm:p-9">
             <header className="mb-6 flex items-center gap-3">
-              <Hanko size={36} />
+              <img src="/aian-mark.svg" alt="" className="h-9 w-9 shrink-0 rounded-xl object-contain" />
               <span className="font-display text-lg font-black uppercase tracking-tight text-paper">
                 {t("brand.name")}{" "}
                 <span className="font-accent font-normal normal-case italic text-crimson">{t("brand.studioSuffix")}</span>

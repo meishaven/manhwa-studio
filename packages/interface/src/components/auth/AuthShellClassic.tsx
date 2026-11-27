@@ -1,13 +1,7 @@
 import { ReactNode } from "react";
 import loginBackgroundVideo from "@koma/ui/assets/login-background.mp4";
 import loginBackgroundPoster from "@koma/ui/assets/login-background-poster.webp";
-import brandLogo from "@koma/ui/assets/logo-1.webp";
-import brandLogo2 from "@koma/ui/assets/logo-2.webp";
 import { handleTablistArrowKeys } from "@koma/ui/utils/tablist-navigation";
-import brandLogo3 from "@koma/ui/assets/logo-3.webp";
-import brandLogo4 from "@koma/ui/assets/logo-4.webp";
-import brandLogo5 from "@koma/ui/assets/logo-5.webp";
-import '@koma/ui/styles/NekoLogo.css';
 import { useDecorativeMediaDelay } from "./useDecorativeMediaDelay";
 import { LegalInlineLinks } from "../legal/LegalInlineLinks";
 import { useI18n } from "../../i18n";
@@ -29,17 +23,15 @@ interface BrandMarkProps {
 }
 
 export const BrandMark = ({ animated = false }: BrandMarkProps) => (
-  <div className="koma-neko is-small" aria-hidden="true">
-  <img src={brandLogo} alt="" width={207} height={213} fetchPriority="high" decoding="async" />
-  {animated ? (
-    <>
-      <img src={brandLogo2} alt="" width={207} height={213} fetchPriority="low" decoding="async" />
-      <img src={brandLogo3} alt="" width={207} height={213} fetchPriority="low" decoding="async" />
-      <img src={brandLogo4} alt="" width={207} height={213} fetchPriority="low" decoding="async" />
-      <img src={brandLogo5} alt="" width={207} height={213} fetchPriority="low" decoding="async" />
-    </>
-  ) : null}
-</div>
+  <img
+    src="/aian-mark.svg"
+    alt=""
+    width={96}
+    height={96}
+    className="h-16 w-16 rounded-xl object-contain"
+    data-animated={animated ? "true" : "false"}
+    aria-hidden="true"
+  />
 );
 
 /* ── shell ────────────────────────────────────── */
@@ -96,7 +88,7 @@ export const AuthShellClassic = ({ activeTab, onSelectLogin, onSelectRegister, s
             </span>
             <div>
               <h1 className="auth-brand__title">
-                {t("brand.name")}<span className="auth-brand__accent">{t("brand.studioSuffix")}</span>
+                AiAN<span className="auth-brand__accent">Studio</span>
                 <span className="auth-brand__dot">.</span>
               </h1>
               <p className="auth-brand__subtitle">{subtitle}</p>
