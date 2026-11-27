@@ -19,6 +19,8 @@ import {
   Wand2,
   Sparkles,
   RefreshCcw,
+  PanelRightClose,
+  PanelRightOpen,
 } from 'lucide-react';
 import KlSlider from '../../../../components/dashboard/KlSlider';
 import type {
@@ -33,6 +35,8 @@ import { getShortcutDisplayLabel } from '../../../../shortcuts/keyboardShortcuts
 
 export interface DashboardManualDockProps {
   manualDockRightOffset: number;
+  manualDockCollapsed: boolean;
+  setManualDockCollapsed: (collapsed: boolean) => void;
   manualToolsConfigVisible: boolean;
   manualToolsConfigTitle: string;
   setManualToolsConfigOpen: (open: boolean) => void;
@@ -283,7 +287,8 @@ const DockDivider: React.FC<{ label: string }> = ({ label }) => (
 
 export const DashboardManualDockNoir: React.FC<DashboardManualDockProps> = (props) => {
   const {
-    manualDockRightOffset, manualToolsConfigVisible, manualToolsConfigTitle,
+    manualDockRightOffset, manualDockCollapsed, setManualDockCollapsed,
+    manualToolsConfigVisible, manualToolsConfigTitle,
     setManualToolsConfigOpen, areaSelectionToolHasConfig, areaSelectionCreateMode,
     setAreaSelectionCreateMode, resolvedAioAreaSelectionShapeKind, hasActiveSelectedRegion,
     duplicateSelectedTypographerRegion, applyAutoDetectedShapeToActiveRegion,
@@ -437,6 +442,20 @@ export const DashboardManualDockNoir: React.FC<DashboardManualDockProps> = (prop
       </AnimatePresence>
 
       {/* ═══ Tool Palette Bar ═══ */}
+      {manualDockCollapsed ? (
+        <m.button
+          type="button"
+          initial={{ opacity: 0, x: 12 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="glass panel-cut fixed top-1/2 z-[100] flex h-11 w-7 -translate-y-1/2 items-center justify-center border border-crimson/30 bg-ink/90 text-paper-dim shadow-hard-crimson transition-colors hover:text-paper"
+          style={{ right: manualDockRightOffset }}
+          onClick={() => setManualDockCollapsed(false)}
+          title={t('dashboard.dock.palette.show')}
+          aria-label={t('dashboard.dock.palette.show')}
+        >
+          <PanelRightOpen size={15} />
+        </m.button>
+      ) : (
       <TooltipProvider delayDuration={1000} skipDelayDuration={120}>
         <m.div
           initial={{ opacity: 0, x: 20 }}
@@ -451,6 +470,19 @@ export const DashboardManualDockNoir: React.FC<DashboardManualDockProps> = (prop
           <div className="halftone-red pointer-events-none absolute inset-0 opacity-15" aria-hidden="true" />
           {/* vertical katakana decoration */}
           <span className="v-text pointer-events-none absolute -left-5 top-1/2 -translate-y-1/2 font-display text-2xl font-black text-outline opacity-30" aria-hidden="true">道具</span>
+
+          <button
+            type="button"
+            className="panel-cut-sm grid h-7 w-7 place-items-center border border-paper/10 bg-ink-3/70 text-paper/45 transition-colors hover:border-crimson/40 hover:bg-crimson/10 hover:text-paper"
+            onClick={() => {
+              setManualToolsConfigOpen(false);
+              setManualDockCollapsed(true);
+            }}
+            title={t('dashboard.dock.palette.hide')}
+            aria-label={t('dashboard.dock.palette.hide')}
+          >
+            <PanelRightClose size={13} />
+          </button>
 
           {/* Config Toggle */}
           <div className="relative flex flex-col gap-1">
@@ -630,6 +662,7 @@ export const DashboardManualDockNoir: React.FC<DashboardManualDockProps> = (prop
           </div>
         </m.div>
       </TooltipProvider>
+      )}
     </>
   );
 };
