@@ -126,7 +126,7 @@ export default memo(function AioBatchModePanel() {
                   usablePresets={usablePresets}
                   disabled={disabled}
                   onAssignPreset={assignChapterPreset}
-                  selectClass={skin.select}
+                  selectClass={noir ? cn(skin.select, 'koma-aio-chapter-select') : skin.select}
                 />
               );
             })}
