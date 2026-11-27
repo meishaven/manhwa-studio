@@ -1,5 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="8" fill="#060810"/>
-  <rect x="1" y="1" width="30" height="30" rx="7" stroke="#a855f7" stroke-width="1" stroke-opacity="0.3"/>
-  <text x="16" y="22" text-anchor="middle" fill="#a855f7" font-family="system-ui" font-size="16" font-weight="800" letter-spacing="-1">K</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+<defs>
+<linearGradient id="l" x1="110" y1="112" x2="270" y2="420" gradientUnits="userSpaceOnUse"><stop stop-color="#B9A0FF"/><stop offset=".52" stop-color="#8B5CF6"/><stop offset="1" stop-color="#6840D8"/></linearGradient>
+<linearGradient id="r" x1="260" y1="82" x2="430" y2="424" gradientUnits="userSpaceOnUse"><stop stop-color="#D7D1FF"/><stop offset=".52" stop-color="#8B5CF6"/><stop offset="1" stop-color="#57D9BC"/></linearGradient>
+<linearGradient id="c" x1="132" y1="326" x2="380" y2="406" gradientUnits="userSpaceOnUse"><stop stop-color="#8B5CF6"/><stop offset="1" stop-color="#57D9BC"/></linearGradient>
+<linearGradient id="b" x1="288" y1="236" x2="342" y2="282" gradientUnits="userSpaceOnUse"><stop stop-color="#D5CCFF"/><stop offset="1" stop-color="#57D9BC"/></linearGradient>
+</defs>
+<rect x="16" y="16" width="480" height="480" rx="112" fill="#101218"/><rect x="17" y="17" width="478" height="478" rx="111" stroke="#343B4A" stroke-width="2"/>
+<path d="M77 425 213 99c8-20 22-31 43-31v158l-84 199H77Z" fill="url(#l)" stroke="#E7E2FF" stroke-opacity=".72" stroke-width="5" stroke-linejoin="round"/>
+<path d="M256 68c21 0 35 11 43 31l136 326h-95l-84-199V68Z" fill="url(#r)" stroke="#D7FFF6" stroke-opacity=".72" stroke-width="5" stroke-linejoin="round"/>
+<path d="M162 317h188l39 91H123l39-91Z" fill="url(#c)" stroke="#E8E4FF" stroke-opacity=".8" stroke-width="5" stroke-linejoin="round"/>
+<path d="M256 115v96" stroke="#F7F5FF" stroke-opacity=".42" stroke-width="5" stroke-linecap="round"/><path d="m111 414 105-255m185 255-102-255" stroke="#FFF" stroke-opacity=".28" stroke-width="4" stroke-linecap="round"/>
+<path d="M295 231h53c9 0 16 7 16 16v19c0 9-7 16-16 16h-18l-17 14v-14h-18c-9 0-16-7-16-16v-19c0-9 7-16 16-16Z" fill="url(#b)" stroke="#F3F4F6" stroke-width="4" stroke-linejoin="round"/>
+<path d="M294 254h39M294 266h25" stroke="#242033" stroke-opacity=".8" stroke-width="5" stroke-linecap="round"/><path d="M386 119h18M395 110v18" stroke="#57D9BC" stroke-width="6" stroke-linecap="round"/><circle cx="395" cy="119" r="18" stroke="#57D9BC" stroke-opacity=".28" stroke-width="2"/>
 </svg>
