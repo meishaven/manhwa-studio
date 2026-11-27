@@ -437,7 +437,7 @@ export const ModelManagerModalNoir = ({
                         <span className="font-mono text-[9px] uppercase tracking-wider">{t('modelHardware.ram')}</span>
                       </div>
                       <p className="text-xs font-semibold text-paper">
-                        {t('modelHardware.ram', {
+                        {t('modelHardware.ramSummary', {
                           available: deviceInfo.ram_available_gb?.toFixed(1) ?? '—',
                           total: deviceInfo.ram_total_gb?.toFixed(1) ?? '—',
                         })}
