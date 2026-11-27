@@ -15,7 +15,6 @@ import {
   SUPPORTED_LOCALES,
   dedupeLocales,
   isRtlLocale,
-  normalizeLocale,
   resolveLocaleChain,
   toHtmlLang,
   type AppLocale,
@@ -54,18 +53,6 @@ export type TranslateFn = I18nContextValue["t"];
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
-const readStoredLocale = (): AppLocale | null => {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  try {
-    return normalizeLocale(window.localStorage.getItem(LOCALE_STORAGE_KEY));
-  } catch {
-    return null;
-  }
-};
-
 const readBrowserLocales = (): AppLocale[] => {
   if (typeof window === "undefined") {
     return [DEFAULT_APP_LOCALE];
@@ -86,7 +73,7 @@ const readDesktopLocalePreferences = async (): Promise<DesktopLocalePreferences 
   }
 };
 
-const detectInitialLocale = (): AppLocale => readStoredLocale() ?? readBrowserLocales()[0] ?? DEFAULT_APP_LOCALE;
+const detectInitialLocale = (): AppLocale => DEFAULT_APP_LOCALE;
 
 export const I18nProvider = ({ children }: { children: ReactNode }) => {
   const [locale, setLocaleState] = useState<AppLocale>(detectInitialLocale);
@@ -112,9 +99,6 @@ export const I18nProvider = ({ children }: { children: ReactNode }) => {
         setSystemLocales(detectedSystemLocales);
       }
 
-      if (!readStoredLocale() && detectedSystemLocales[0]) {
-        setLocaleState(detectedSystemLocales[0]);
-      }
     };
 
     void syncLocalePreferences();
@@ -182,8 +166,8 @@ export const I18nProvider = ({ children }: { children: ReactNode }) => {
     document.documentElement.dir = isRtlLocale(locale) ? "rtl" : "ltr";
   }, [locale]);
 
-  const setLocale = useCallback((nextLocale: AppLocale) => {
-    setLocaleState(nextLocale);
+  const setLocale = useCallback((_nextLocale: AppLocale) => {
+    setLocaleState(DEFAULT_APP_LOCALE);
   }, []);
 
   const t = useCallback(
