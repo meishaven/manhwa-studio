@@ -75,11 +75,11 @@ describe('DesktopCloseGuard (default family)', () => {
   it('renders nothing until the shell emits a close request', () => {
     renderGuard();
 
-    expect(screen.queryByText('Close KŌMA?')).not.toBeInTheDocument();
+    expect(screen.queryByText('Close AiAN Studio?')).not.toBeInTheDocument();
 
     emitCloseRequest({ hasUnsavedWork: true, batchRunning: false });
 
-    expect(screen.getByText('Close KŌMA?')).toBeInTheDocument();
+    expect(screen.getByText('Close AiAN Studio?')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Close anyway' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
   });
@@ -92,7 +92,7 @@ describe('DesktopCloseGuard (default family)', () => {
 
     expect(closeForce).toHaveBeenCalledTimes(1);
     await waitFor(() => {
-      expect(screen.queryByText('Close KŌMA?')).not.toBeInTheDocument();
+      expect(screen.queryByText('Close AiAN Studio?')).not.toBeInTheDocument();
     });
   });
 
@@ -104,7 +104,7 @@ describe('DesktopCloseGuard (default family)', () => {
 
     expect(closeForce).not.toHaveBeenCalled();
     await waitFor(() => {
-      expect(screen.queryByText('Close KŌMA?')).not.toBeInTheDocument();
+      expect(screen.queryByText('Close AiAN Studio?')).not.toBeInTheDocument();
     });
   });
 
@@ -114,12 +114,12 @@ describe('DesktopCloseGuard (default family)', () => {
     emitCloseRequest({ hasUnsavedWork: true, batchRunning: false });
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
     await waitFor(() => {
-      expect(screen.queryByText('Close KŌMA?')).not.toBeInTheDocument();
+      expect(screen.queryByText('Close AiAN Studio?')).not.toBeInTheDocument();
     });
 
     emitCloseRequest({ hasUnsavedWork: true, batchRunning: false });
 
-    expect(screen.getByText('Close KŌMA?')).toBeInTheDocument();
+    expect(screen.getByText('Close AiAN Studio?')).toBeInTheDocument();
   });
 });
 
@@ -135,7 +135,7 @@ describe('CloseGuardModalClassic', () => {
       </I18nProvider>,
     );
 
-    expect(screen.getByText('Close KŌMA?')).toBeInTheDocument();
+    expect(screen.getByText('Close AiAN Studio?')).toBeInTheDocument();
     expect(
       screen.getByText(
         'There are unsaved changes or a batch is running. Closing now may lose unsaved changes or interrupt the batch.',
@@ -156,6 +156,6 @@ describe('CloseGuardModalClassic', () => {
       </I18nProvider>,
     );
 
-    expect(screen.queryByText('Close KŌMA?')).not.toBeInTheDocument();
+    expect(screen.queryByText('Close AiAN Studio?')).not.toBeInTheDocument();
   });
 });
