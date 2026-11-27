@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
-import { Layers, X, CheckCircle2, AlertTriangle, Sparkles, Plus, Cpu, MemoryStick, Monitor, RefreshCw } from 'lucide-react';
+import { Layers, X, CheckCircle2, AlertTriangle, Sparkles, Plus, Cpu, MemoryStick, Monitor, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
 import { useI18n } from '../../../i18n';
 import { useMiniBackendRuntimeStatus } from '../../../hooks/useMiniBackendRuntimeStatus';
 import { isMiniBackendRuntimeServing, isMiniBackendRuntimeStarting } from '../../../utils/miniBackendRuntime';
@@ -167,6 +167,7 @@ export const ModelManagerModalNoir = ({
     refresh: refreshHardware,
   } = useModelHardwareProfile(open);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [hardwarePanelExpanded, setHardwarePanelExpanded] = useState(true);
   const [sourceFilter, setSourceFilter] = useState<ModelFilterState['source']>(
     initialSourceFilter ?? 'local',
   );
@@ -402,18 +403,30 @@ export const ModelManagerModalNoir = ({
                     </p>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => void refreshHardware()}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setHardwarePanelExpanded((value) => !value)}
+                    aria-expanded={hardwarePanelExpanded}
+                    aria-label={t(hardwarePanelExpanded ? 'modelHardware.hideDetails' : 'modelHardware.showDetails')}
+                    className="inline-flex items-center gap-1 border border-paper/15 px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-wider text-paper/65 transition-colors hover:border-mint/40 hover:text-paper"
+                  >
+                    {t(hardwarePanelExpanded ? 'modelHardware.hideDetails' : 'modelHardware.showDetails')}
+                    {hardwarePanelExpanded ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void refreshHardware()}
                   disabled={hardwareLoading}
                   className="inline-flex items-center gap-1.5 border border-paper/15 px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-wider text-paper/65 hover:text-paper disabled:opacity-40"
                 >
                   <RefreshCw size={11} className={hardwareLoading ? 'animate-spin' : ''} />
                   {t(hardwareLoading ? 'modelHardware.status.refreshing' : 'modelHardware.refresh')}
-                </button>
+                  </button>
+                </div>
               </div>
 
-              {deviceInfo ? (
+              {hardwarePanelExpanded && (deviceInfo ? (
                 <>
                   <div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
                     <div className="min-w-0 border border-paper/8 bg-ink/60 p-2.5">
@@ -496,7 +509,7 @@ export const ModelManagerModalNoir = ({
                   {t(hardwareLoading ? 'modelHardware.loading' : 'modelHardware.unavailable')}
                   {hardwareFailed ? ' ' : ''}
                 </p>
-              )}
+              ))}
             </section>
 
             {/* ═══ FILTERS ═══ */}
