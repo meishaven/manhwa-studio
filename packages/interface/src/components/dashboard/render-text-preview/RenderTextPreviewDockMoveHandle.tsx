@@ -85,13 +85,13 @@ export default function RenderTextPreviewDockMoveHandle({
 
   return (
     <div className={noir
-      ? 'relative flex h-5 items-center justify-between border-b border-paper/10 px-1 pb-1'
-      : 'flex items-center justify-between border-b border-paper/10 px-1 pb-1'}>
+      ? 'relative flex h-8 items-center gap-1 border-b border-paper/10 px-1'
+      : 'flex h-8 items-center gap-1 border-b border-paper/10 px-1'}>
       <button
         type="button"
-        className="flex cursor-grab touch-none items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-paper-dim hover:bg-paper/10 hover:text-paper active:cursor-grabbing"
-        title="Drag to move the toolbar"
-        aria-label="Drag to move the toolbar"
+        className="flex h-7 min-w-0 flex-1 cursor-grab touch-none items-center gap-2 rounded px-2 text-left font-mono text-[10px] font-bold uppercase tracking-wider text-paper-dim transition-colors hover:bg-paper/10 hover:text-paper active:cursor-grabbing"
+        title="Drag anywhere along this bar to move the toolbar"
+        aria-label="Drag this bar to move the toolbar"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerEnd}
@@ -102,9 +102,7 @@ export default function RenderTextPreviewDockMoveHandle({
       </button>
       <button
         type="button"
-        className={noir
-          ? 'grid h-5 w-5 place-items-center rounded text-paper-dim transition-colors hover:bg-paper/10 hover:text-paper'
-          : 'grid h-6 w-6 place-items-center rounded text-paper-dim transition-colors hover:bg-paper/10 hover:text-paper'}
+        className="grid h-7 w-7 shrink-0 place-items-center rounded text-paper-dim transition-colors hover:bg-paper/10 hover:text-paper"
         title="Return toolbar to automatic position"
         aria-label="Return toolbar to automatic position"
         onClick={() => onDockPositionChange(null, true)}
