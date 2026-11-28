@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2026-11-28
+
+### Added
+
+- Korean PP-OCRv5 Mobile is available as an optional, lightweight ONNX OCR model with CPU inference.
+- Manual OCR region selections always run fresh recognition instead of reusing stale automatic OCR cache entries.
+- The floating Render Preview toolbar has a wider, easier-to-grab drag strip and keeps its saved position.
+
+### Fixed
+
+- Punctuation-only OCR results such as `...` are treated as failed recognition rather than valid dialogue; fallback recognition can retry and recover text.
+- Korean Auto OCR now prefers the dedicated Korean recognizer while retaining existing fallback engines.
+
+### Changed
+
+- Configure AiAN Studio Discord Rich Presence with the supplied application ID.
+- Align root, Electron, Tauri and native package version metadata at 1.0.2.
+
 ## [Unreleased]
 
 ### Changed
