@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "AiAN Studio",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "identifier": "com.aian-studio.desktop",
   "build": {
     "beforeDevCommand": "bun run dev:desktop",
@@ -63,19 +63,25 @@
     "longDescription": "AiAN Studio is a desktop workspace for translating, cleaning and typesetting manga, manhwa and webtoons.",
     "fileAssociations": [
       {
-        "ext": ["cbz"],
+        "ext": [
+          "cbz"
+        ],
         "name": "AiAN Comic Archive (CBZ)",
         "description": "AiAN Studio comic book archive (zip)",
         "mimeType": "application/vnd.comicbook+zip"
       },
       {
-        "ext": ["cb7"],
+        "ext": [
+          "cb7"
+        ],
         "name": "AiAN Comic Archive (CB7)",
         "description": "AiAN Studio comic book archive (7z)",
         "mimeType": "application/vnd.comicbook+7zip"
       },
       {
-        "ext": ["pdf"],
+        "ext": [
+          "pdf"
+        ],
         "name": "AiAN PDF Document",
         "description": "AiAN Studio PDF document",
         "mimeType": "application/pdf"
