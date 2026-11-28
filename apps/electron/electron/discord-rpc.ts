@@ -108,7 +108,7 @@ interface Nich87ActivityPayload {
 const MAX_BUTTONS = 2;
 const MAX_TEXT_LENGTH = 128;
 const MIN_ACTIVITY_UPDATE_INTERVAL_MS = 250;
-const DEFAULT_DISCORD_CLIENT_ID = "1484952540775977061";
+const DEFAULT_DISCORD_CLIENT_ID = "";
 
 const DEFAULT_AIAN_WEBSITE_URL = "https://github.com/meishaven/manhwa-studio";
 const DEFAULT_AIAN_DOWNLOAD_URL = "https://github.com/meishaven/manhwa-studio/releases/latest";
@@ -750,7 +750,7 @@ export class DiscordRPCService {
     if (!this.clientId) {
       if (!this.hasWarnedMissingClientId) {
         console.warn(
-          "Discord Rich Presence desativado: configure DISCORD_RPC_CLIENT_ID (ou DISCORD_CLIENT_ID).",
+          "Discord Rich Presence disabled: set AIAN_DISCORD_CLIENT_ID to your AiAN Discord application ID.",
         );
         this.hasWarnedMissingClientId = true;
       }
