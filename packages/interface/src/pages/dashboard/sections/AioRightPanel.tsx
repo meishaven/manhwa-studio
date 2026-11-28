@@ -8,6 +8,7 @@ import { useAioCloudPreviewStart } from '../hooks/use-aio-cloud-preview-start';
 import {
   ArrowRight,
   Bookmark,
+  CheckCircle2,
   Eraser,
   ExternalLink,
   Eye,
@@ -522,6 +523,24 @@ export default memo(function AioRightPanel({
                 {t(isManualTranslationStep ? 'dashboard.aio.skipTranslation' : 'dashboard.aio.skip')}
               </button>
             </div>
+
+            {activeManualProgress &&
+              activeManualProgress.currentIndex === AIO_MANUAL_STAGE_ORDER.length - 1 &&
+              (activeManualProgress.statusByStage.render === 'done' ||
+                activeManualProgress.statusByStage.render === 'skipped') && (
+                <div className="koma-aio-pipeline-controls">
+                  <button
+                    type="button"
+                    className={skin.primaryButton}
+                    onClick={() => handleAioSubModeChange('auto')}
+                    disabled={processing}
+                    title="Finish Manual AIO and return to Automatic mode"
+                    aria-label="Done with Manual AIO"
+                  >
+                    <CheckCircle2 size={13} /> Done
+                  </button>
+                </div>
+              )}
 
             {resolvedActiveId && activeManualProgress && (
               <p className="koma-aio-hint">
