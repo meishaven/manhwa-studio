@@ -29,18 +29,18 @@ type ReleaseResponse = {
 
 const LATEST_RELEASE: GithubReleaseJson = {
   tag_name: "v1.1.0",
-  name: "KOMA Studio 1.1.0",
+  name: "AiAN Studio 1.1.0",
   body: "notas",
-  html_url: "https://github.com/klaus-2/koma-studio/releases/tag/v1.1.0",
+  html_url: "https://github.com/meishaven/manhwa-studio/releases/tag/v1.1.0",
   draft: false,
   prerelease: false,
 };
 
 const buildListedRelease = (tag: string): GithubReleaseJson => ({
   tag_name: tag,
-  name: `KOMA Studio ${tag}`,
+  name: `AiAN Studio ${tag}`,
   body: "notas",
-  html_url: `https://github.com/klaus-2/koma-studio/releases/tag/${tag}`,
+  html_url: `https://github.com/meishaven/manhwa-studio/releases/tag/${tag}`,
   draft: false,
   prerelease: tag.includes("beta") || tag.startsWith("runtime-"),
 });
@@ -257,7 +257,7 @@ describe("useUpdater", () => {
     });
 
     expect(openExternalMock).toHaveBeenCalledWith(
-      "https://github.com/klaus-2/koma-studio/releases/tag/v1.1.0",
+      "https://github.com/meishaven/manhwa-studio/releases/tag/v1.1.0",
     );
     expect(view.result.current.api.status).toBe("available");
   });
@@ -577,6 +577,11 @@ describe("useUpdater", () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it("extracts the app semver from AiAN build-number release tags", () => {
+    expect(compareVersions("aian-studio-v1.0.1-build-41", "1.0.0")).toBeGreaterThan(0);
+    expect(compareVersions("aian-studio-v1.0.0-build-40", "1.0.1")).toBeLessThan(0);
   });
 
   it("ranks beta.10 above beta.9 with numeric prerelease identifiers", () => {
