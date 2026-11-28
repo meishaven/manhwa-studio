@@ -122,7 +122,7 @@ impl Preset {
             Self::AioPipelineAutomatic => ("AIO Pipeline", "Automatic processing"),
             Self::ScanlationFeed => ("Scanlation Feed", "Reading community updates"),
             Self::Settings => ("Preferences", "Adjusting app settings"),
-            Self::Idle => ("KOMA Studio", "Idle"),
+            Self::Idle => ("AiAN Studio", "Idle"),
         }
     }
 
@@ -145,8 +145,8 @@ impl Preset {
         DiscordActivity {
             details: Some(details.to_owned()),
             state: Some(state.to_owned()),
-            large_image_key: Some("koma_logo".to_owned()),
-            large_image_text: Some("KOMA Studio".to_owned()),
+            large_image_key: Some("aian_logo".to_owned()),
+            large_image_text: Some("AiAN Studio".to_owned()),
             small_image_key: Some(self.key().to_owned()),
             small_image_text: Some(state.to_owned()),
             start_timestamp: None,
@@ -686,7 +686,7 @@ fn set_mode_activity(
 }
 
 fn preset_assets() -> BTreeMap<String, String> {
-    std::iter::once(("koma_logo".to_owned(), "KOMA Studio".to_owned()))
+    std::iter::once(("aian_logo".to_owned(), "AiAN Studio".to_owned()))
         .chain(
             Preset::ALL
                 .into_iter()
