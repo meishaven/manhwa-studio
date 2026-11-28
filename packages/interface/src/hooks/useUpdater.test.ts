@@ -28,22 +28,25 @@ type ReleaseResponse = {
 };
 
 const LATEST_RELEASE: GithubReleaseJson = {
-  tag_name: "v1.1.0",
+  tag_name: "aian-studio-v1.1.0-build-42",
   name: "AiAN Studio 1.1.0",
   body: "notas",
-  html_url: "https://github.com/meishaven/manhwa-studio/releases/tag/v1.1.0",
+  html_url: "https://github.com/meishaven/manhwa-studio/releases/tag/aian-studio-v1.1.0-build-42",
   draft: false,
   prerelease: false,
 };
 
-const buildListedRelease = (tag: string): GithubReleaseJson => ({
-  tag_name: tag,
-  name: `AiAN Studio ${tag}`,
-  body: "notas",
-  html_url: `https://github.com/meishaven/manhwa-studio/releases/tag/${tag}`,
-  draft: false,
-  prerelease: tag.includes("beta") || tag.startsWith("runtime-"),
-});
+const buildListedRelease = (tag: string): GithubReleaseJson => {
+  const aianTag = tag.startsWith("aian-studio-") ? tag : `aian-studio-${tag}`;
+  return {
+    tag_name: aianTag,
+    name: `AiAN Studio ${tag}`,
+    body: "notas",
+    html_url: `https://github.com/meishaven/manhwa-studio/releases/tag/${aianTag}`,
+    draft: false,
+    prerelease: tag.includes("beta") || tag.startsWith("runtime-"),
+  };
+};
 
 const storageMap = new Map<string, string>();
 Object.defineProperty(window, "localStorage", {
@@ -225,6 +228,19 @@ describe("useUpdater", () => {
     expect(result.current.api.newVersion).toBeNull();
   });
 
+  it("ignores a legacy KOMA/Manhwa stable release from the same repository", async () => {
+    getAppVersionMock.mockReturnValue("1.0.1");
+    fetchReleaseMock.mockResolvedValue({
+      ok: true,
+      json: async () => ({ ...LATEST_RELEASE, tag_name: "v1.3.3" }),
+    });
+
+    const result = await checkForUpdate();
+
+    expect(result.current.api.status).toBe("not-available");
+    expect(result.current.api.newVersion).toBeNull();
+  });
+
   it("reports 'not-available' when the shell version equals the latest release", async () => {
     getAppVersionMock.mockReturnValue("1.1.0");
     const result = await checkForUpdate();
@@ -257,7 +273,7 @@ describe("useUpdater", () => {
     });
 
     expect(openExternalMock).toHaveBeenCalledWith(
-      "https://github.com/meishaven/manhwa-studio/releases/tag/v1.1.0",
+      "https://github.com/meishaven/manhwa-studio/releases/tag/aian-studio-v1.1.0-build-42",
     );
     expect(view.result.current.api.status).toBe("available");
   });
