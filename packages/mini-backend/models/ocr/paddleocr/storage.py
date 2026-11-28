@@ -136,6 +136,7 @@ def _build_manifests() -> Mapping[str, tuple[RemoteAsset, ...]]:
                         size=asset.size,
                         sha256=asset.sha256,
                         url=asset.url,
+                        url_candidates=asset.url_candidates,
                     )
                 )
         manifests[model_id] = tuple(renamed)
