@@ -262,10 +262,7 @@ const fetchGithubRelease = async (
   return match ?? null;
 };
 
-const buildReleasePageUrl = (
-  channel: UpdaterChannel,
-  version: string | null,
-): string => {
+const buildReleasePageUrl = (channel: UpdaterChannel): string => {
   const base = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases`;
   if (channel === "stable") {
     return `${base}/latest`;
@@ -515,7 +512,7 @@ const useProvideUpdater = (): { api: UseUpdaterApi; progress: UpdaterProgress } 
   const openReleasePage = useCallback(async (): Promise<void> => {
     const releaseUrl =
       releasePageUrlRef.current ??
-      buildReleasePageUrl(state.channel, state.newVersion);
+      buildReleasePageUrl(state.channel);
 
     try {
       if (typeof window !== "undefined" && desktopBridge.desktop?.openExternal) {
