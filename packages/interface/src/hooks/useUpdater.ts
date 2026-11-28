@@ -17,8 +17,8 @@ import type {
 const GITHUB_OWNER = "meishaven";
 const GITHUB_REPO = "manhwa-studio";
 
-const BETA_TAG_PATTERN = /^v\d+\.\d+\.\d+-beta\.\d+$/;
-const STABLE_TAG_PATTERN = /^v\d+\.\d+\.\d+$/;
+const BETA_TAG_PATTERN = /^(?:aian-studio-)?v\d+\.\d+\.\d+-beta\.\d+(?:-build-\d+)?$/i;
+const STABLE_TAG_PATTERN = /^(?:aian-studio-)?v\d+\.\d+\.\d+(?:-build-\d+)?$/i;
 
 const UPDATER_BRIDGE_UNAVAILABLE = "Installer updater bridge is unavailable.";
 
@@ -124,7 +124,11 @@ const normalizeVersion = (value: string | null | undefined): string => {
     return "";
   }
 
-  return value.trim().replace(/^v/i, "");
+  const trimmed = value.trim();
+  // AiAN release tags include a build suffix, e.g.
+  // aian-studio-v1.0.1-build-41. Compare the app version, not the build label.
+  const taggedVersion = trimmed.match(/(?:^|-)v?(\d+\.\d+\.\d+(?:-beta\.\d+)?)(?:-build-\d+)?$/i);
+  return taggedVersion?.[1] ?? trimmed.replace(/^v/i, "");
 };
 
 const comparePrereleaseIdentifier = (left: string, right: string): number => {
@@ -260,10 +264,6 @@ const buildReleasePageUrl = (
   version: string | null,
 ): string => {
   const base = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases`;
-  if (version && version.trim().length > 0) {
-    const normalized = normalizeVersion(version);
-    return `${base}/tag/v${normalized}`;
-  }
   if (channel === "stable") {
     return `${base}/latest`;
   }
