@@ -16,7 +16,10 @@ use tauri::State;
 use thiserror::Error;
 use tokio::sync::oneshot;
 
-pub const DEFAULT_DISCORD_CLIENT_ID: &str = "1484952540775977061";
+pub const DEFAULT_DISCORD_CLIENT_ID: &str = match option_env!("AIAN_DISCORD_CLIENT_ID") {
+    Some(client_id) => client_id,
+    None => "",
+};
 const MAX_TEXT_CHARS: usize = 128;
 const MAX_FILE_NAME_CHARS: usize = 48;
 /// Discord silently drops presence updates faster than ~1 per 15 s. The
