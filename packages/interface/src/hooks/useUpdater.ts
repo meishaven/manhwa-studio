@@ -14,8 +14,8 @@ import type {
   UpdaterStatus,
 } from "../types";
 
-const GITHUB_OWNER = "klaus-2";
-const GITHUB_REPO = "koma-studio";
+const GITHUB_OWNER = "meishaven";
+const GITHUB_REPO = "manhwa-studio";
 
 const BETA_TAG_PATTERN = /^v\d+\.\d+\.\d+-beta\.\d+$/;
 const STABLE_TAG_PATTERN = /^v\d+\.\d+\.\d+$/;
