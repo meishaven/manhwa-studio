@@ -56,14 +56,21 @@ def _confidence(result: OCRTextResult) -> float:
     return min(1.0, max(0.0, value)) if math.isfinite(value) else 0.0
 
 
-def _rank(result: OCRTextResult) -> tuple[bool, float]:
-    return bool((result.text or "").strip()), _confidence(result)
+def _has_recognizable_content(text: str | None) -> bool:
+    """Punctuation-only output is not a successful OCR result."""
+    return any(character.isalnum() for character in (text or ""))
+
+
+def _rank(result: OCRTextResult) -> tuple[bool, int, float]:
+    value = (result.text or "").strip()
+    alnum_count = sum(character.isalnum() for character in value)
+    return alnum_count > 0, alnum_count, _confidence(result)
 
 
 def _needs_retry(result: OCRTextResult | None) -> bool:
     return (
         result is None
-        or not (result.text or "").strip()
+        or not _has_recognizable_content(result.text)
         or _confidence(result) < OCR_SCORE_THRESHOLD
     )
 
@@ -101,6 +108,10 @@ def _finalize(
     results: list[OCRTextResult] = []
     for region in regions:
         result = best_by_id.get(region.id)
+        if result is not None and not _has_recognizable_content(result.text):
+            # Do not let a punctuation-only hallucination be translated as if
+            # it were recognized dialogue. An empty result is reviewable.
+            result = replace(result, text="", score=0.0)
         if result is None:
             result = OCRTextResult(
                 id=region.id,
