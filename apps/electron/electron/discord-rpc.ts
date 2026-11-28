@@ -1054,7 +1054,6 @@ export class DiscordRPCService {
     const details = currentFile
       ? `Processando lote - ${truncateFileName(currentFile)}`
       : "Processando lote";
-
     await this.setPresetActivity("batch_mode", {
       details,
       state: `${safeCurrentIndex}/${safeFileCount} files`,
@@ -1062,5 +1061,4 @@ export class DiscordRPCService {
     });
   }
 }
-
 export const discordRPC = new DiscordRPCService();
