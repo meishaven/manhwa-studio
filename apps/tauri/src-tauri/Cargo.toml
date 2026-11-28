@@ -1,6 +1,6 @@
 [package]
 name = "koma-studio-v2"
-version = "1.0.1"
+version = "1.0.2"
 description = "AiAN Studio — Tauri desktop shell"
 authors = ["AiAN Studio"]
 edition = "2024"
