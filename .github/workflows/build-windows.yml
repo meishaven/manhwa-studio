@@ -3,7 +3,7 @@ name: Build AiAN Studio for Windows
 on:
   push:
     branches:
-      - feature/supabase-library
+      - main
   workflow_dispatch:
 
 permissions:
