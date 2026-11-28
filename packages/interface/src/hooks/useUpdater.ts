@@ -239,7 +239,10 @@ const fetchGithubRelease = async (
     if (!response.ok) {
       throw new Error(`GitHub API respondeu ${response.status}.`);
     }
-    return (await response.json()) as GithubReleasePayload;
+    const release = (await response.json()) as GithubReleasePayload;
+    return typeof release.tag_name === "string" && STABLE_TAG_PATTERN.test(release.tag_name)
+      ? release
+      : null;
   }
 
   const response = await fetchWithTimeoutAndRetry(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases?per_page=20`, {
