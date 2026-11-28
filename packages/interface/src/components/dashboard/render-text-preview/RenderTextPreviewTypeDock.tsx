@@ -755,7 +755,6 @@ const RenderTextPreviewTypeDock = ({
                 </span>
               </div>
             </div>
-
             {/* Skew Y */}
             <div className="koma-type-dock__fine-field">
               <span className="koma-type-dock__fine-label">{t('renderPreview.skewY')}</span>
@@ -782,7 +781,6 @@ const RenderTextPreviewTypeDock = ({
               </div>
             </div>
           </div>
-
           {/* ═══ Effects Row ═══ */}
           <div className="koma-type-dock__effects-row">
             {/* Fill */}
@@ -813,7 +811,6 @@ const RenderTextPreviewTypeDock = ({
                 });
               }}
             />
-
             {/* Outline */}
             <RenderEffectPopover
               label={t('renderPreview.outline')}
@@ -881,7 +878,6 @@ const RenderTextPreviewTypeDock = ({
                 </span>
               </div>
             </RenderEffectPopover>
-
             {/* Shadow */}
             <RenderEffectPopover
               label={t('renderPreview.shadow')}
@@ -996,7 +992,6 @@ const RenderTextPreviewTypeDock = ({
                   </span>
                 </div>
               </div>
-
               {/* Shadow Layers */}
               <div className="koma-effect-popover__layers">
                 <div className="koma-effect-popover__layersHead">
@@ -1171,7 +1166,6 @@ const RenderTextPreviewTypeDock = ({
                 )}
               </div>
             </RenderEffectPopover>
-
             {/* Text Effect */}
             <TextEffectPopover
               value={selectedRegionStyle.textEffectPreset ?? 'none'}
@@ -1180,7 +1174,6 @@ const RenderTextPreviewTypeDock = ({
               onChange={handleTextEffectChange}
               onIntensityChange={handleTextEffectIntensity}
             />
-
             {/* Circular Text */}
             <CircularTextPopover
               enabled={selectedRegionStyle.textPathMode === 'circular'}
@@ -1279,7 +1272,6 @@ const RenderTextPreviewTypeDock = ({
     </div>
   );
 };
-
 // The dock receives stable callback identities from the composition root, so
 // memoizing skips its ~1,100-line subtree while dragging/hovering changes
 // unrelated parent state (interaction, hoveredRegionId, contextMenu, ...).
