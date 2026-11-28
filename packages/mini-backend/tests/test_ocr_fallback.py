@@ -42,7 +42,7 @@ from pipelines.ocr_stage import (  # noqa: E402
     run_cached_ocr,
 )
 from routers import ocr as ocr_router_module  # noqa: E402
-from utils.ocr_fallback import recognize_with_fallbacks  # noqa: E402
+from utils.ocr_fallback import _needs_retry, recognize_with_fallbacks  # noqa: E402
 
 
 class _FakeEngine:
@@ -80,6 +80,19 @@ class _FakeEngine:
 
 
 class OcrFallbackTests(unittest.IsolatedAsyncioTestCase):
+    def test_punctuation_only_result_is_retried_even_with_perfect_score(self) -> None:
+        result = OCRTextResult(
+            id="r1",
+            bbox=(10, 20, 90, 60),
+            text="...",
+            score=1.0,
+            source="model",
+            detector_model_key="det",
+            model_key="pororo",
+        )
+
+        self.assertTrue(_needs_retry(result))
+
     async def test_ocr_fallback_uses_upscaled_variant_for_weak_regions(self) -> None:
         engine = _FakeEngine()
         image = Image.new("RGB", (300, 500), (255, 255, 255))
