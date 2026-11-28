@@ -57,6 +57,22 @@ _MAX_INLINE_HASH_BYTES = 8 * 1024 * 1024
 
 DETECTOR_PATH = "onnx/PP-OCRv5/det/ch_PP-OCRv5_mobile_det.onnx"
 
+# Korean PP-OCRv5 Mobile is mirrored as an unmodified Apache-2.0 ONNX export.
+# Pin the mirror commit and verify each asset against its recorded SHA-256.
+KOREAN_PADDLEOCR_MIRROR_REVISION = "cf33c2959f02f5a48ad2bc98bd80b0b50b8632ec"
+KOREAN_PADDLEOCR_REC_URL = (
+    "https://raw.githubusercontent.com/Nyora-Manga/nyora-translate-models/"
+    f"{KOREAN_PADDLEOCR_MIRROR_REVISION}/paddle/korean_PP-OCRv5_mobile_rec.onnx"
+)
+KOREAN_PADDLEOCR_DICT_URL = (
+    "https://raw.githubusercontent.com/Nyora-Manga/nyora-translate-models/"
+    f"{KOREAN_PADDLEOCR_MIRROR_REVISION}/paddle/ppocrv5_korean_dict.txt"
+)
+KOREAN_PADDLEOCR_REC_SIZE = 13_418_787
+KOREAN_PADDLEOCR_REC_SHA256 = "92f0b7785e64fc9090106a241cf4c1eb97472824558272751b88a2a4476d3a08"
+KOREAN_PADDLEOCR_DICT_SIZE = 47_451
+KOREAN_PADDLEOCR_DICT_SHA256 = "a88071c68c01707489baa79ebe0405b7beb5cca229f4fc94cc3ef992328802d7"
+
 INSTALL_ENDPOINT = "/models/install"
 MANAGED_INSTALL_STRATEGY = "backend_managed"
 
@@ -257,6 +273,41 @@ def _paddleocr_models(verify: bool) -> dict[str, dict[str, Any]]:
                 raise SystemExit(f"modelscope manifest is missing {path}")
             assets.append(_asset(path, info["size"], info["sha256"]))
         models[model_id] = {"assets": assets}
+    detector = modelscope.get(DETECTOR_PATH)
+    if detector is None:
+        raise SystemExit(f"modelscope manifest is missing shared detector {DETECTOR_PATH}")
+    korean_rec = {
+        "path": "paddle/korean_PP-OCRv5_mobile_rec.onnx",
+        "url": KOREAN_PADDLEOCR_REC_URL,
+        "size": KOREAN_PADDLEOCR_REC_SIZE,
+        "sha256": KOREAN_PADDLEOCR_REC_SHA256,
+    }
+    korean_dictionary = {
+        "path": "paddle/ppocrv5_korean_dict.txt",
+        "url": KOREAN_PADDLEOCR_DICT_URL,
+        "size": KOREAN_PADDLEOCR_DICT_SIZE,
+        "sha256": KOREAN_PADDLEOCR_DICT_SHA256,
+    }
+    if verify:
+        for asset in (korean_rec, korean_dictionary):
+            size, digest = _download_sha256(asset["url"], expected_size=asset["size"])
+            if digest.lower() != asset["sha256"]:
+                raise SystemExit(
+                    f"{asset['url']}: SHA-256 {digest} != pinned {asset['sha256']}"
+                )
+    models["paddleocr_ko_v5"] = {
+        "assets": [
+            _asset(DETECTOR_PATH, detector["size"], detector["sha256"]),
+            _asset(
+                korean_rec["path"], korean_rec["size"], korean_rec["sha256"],
+                url=korean_rec["url"],
+            ),
+            _asset(
+                korean_dictionary["path"], korean_dictionary["size"], korean_dictionary["sha256"],
+                url=korean_dictionary["url"],
+            ),
+        ]
+    }
     _model_total(models)
     return models
 
