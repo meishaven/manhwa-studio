@@ -139,6 +139,73 @@ class RunCachedOcrTests(_DedupIsolatedTestCase):
         self.assertEqual([record["id"] for record in result.records], ["r1"])
         self.assertEqual(cache.cache_calls, [])
 
+    async def test_manual_region_bypasses_all_old_ocr_results(self) -> None:
+        stale = {
+            "id": "manual-1",
+            "bbox": [0, 0, 10, 10],
+            "text": "...",
+            "score": 1.0,
+            "source": "model",
+            "detector_model_key": "det",
+            "ocr_model_key": "pororo",
+            "foreground_gradient": None,
+        }
+        cache = _FakeCache(cached_by_id={"manual-1": stale})
+        seed: OCRSeed = {
+            "id": "manual-1",
+            "bbox": [0, 0, 10, 10],
+            "source": "manual",
+            "detector_model_key": "",
+        }
+        request = _pixel_request((seed,), cache)
+        recognized: list[str] = []
+
+        class _NoManualPersistence:
+            def get_ocr(self, cache_key: str):
+                raise AssertionError("manual OCR must not read old disk records")
+
+            def merge_ocr(self, **kwargs: object):
+                raise AssertionError("manual OCR must not write an automatic OCR cache")
+
+        async def _fresh_recognition(**kwargs: object) -> list[OCRTextResult]:
+            regions = kwargs["regions"]
+            recognized.extend(region.source for region in regions)
+            return [
+                OCRTextResult(
+                    id=region.id,
+                    bbox=region.bbox,
+                    text="fresh Korean OCR",
+                    score=0.82,
+                    source=region.source,
+                    detector_model_key=region.detector_model_key,
+                    model_key="paddleocr_ko_v5",
+                )
+                for region in regions
+            ]
+
+        with (
+            patch("pipelines.ocr_stage.recognize_with_fallbacks", _fresh_recognition),
+            patch(
+                "pipelines.ocr_stage.enrich_ocr_record_with_gradient",
+                lambda image, record: _mark_enriched(record),
+            ),
+            patch("pipelines.ocr_stage.get_stage_store", return_value=_NoManualPersistence()),
+            patch(
+                "pipelines.ocr_stage.get_ocr_region_dedup_cache",
+                side_effect=AssertionError("manual OCR must bypass crop deduplication"),
+            ),
+        ):
+            result = await run_cached_ocr(
+                request,
+                cache=cache,
+                resolve_engine=lambda **_: _FakeEngine("paddleocr_ko_v5"),
+            )
+
+        self.assertEqual(recognized, ["manual"])
+        self.assertEqual(result.records[0]["text"], "fresh Korean OCR")
+        self.assertEqual(result.records[0]["ocr_model_key"], "paddleocr_ko_v5")
+        self.assertEqual(cache.cache_calls, [])
+
     async def test_fresh_run_recognizes_missing_and_caches(self) -> None:
         cache = _FakeCache()
         recognized: list[list[str]] = []
