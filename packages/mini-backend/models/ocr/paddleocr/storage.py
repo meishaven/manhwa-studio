@@ -63,10 +63,13 @@ class RemoteAsset:
     size: int
     sha256: str
     url: str | None = None
+    url_candidates: tuple[str, ...] = ()
 
     @property
     def urls(self) -> tuple[str, ...]:
-        """Pinned standalone URL or equivalent mirrors for the same asset."""
+        """Pinned download endpoints for the same checksum-verified asset."""
+        if self.url_candidates:
+            return self.url_candidates
         if self.url:
             return (self.url,)
         return tuple(f"{base}/{self.path}" for base in _MIRROR_BASES)
@@ -94,6 +97,12 @@ def _build_manifests() -> Mapping[str, tuple[RemoteAsset, ...]]:
                 raise ModelDownloadError(
                     "paddleocr manifest", [f"{model_id}: incomplete asset {path!r}"]
                 )
+            raw_candidates = asset.get("urls")
+            url_candidates = tuple(
+                str(value).strip()
+                for value in raw_candidates
+                if isinstance(value, str) and value.strip()
+            ) if isinstance(raw_candidates, list) else ()
             source_url = str(asset.get("url") or "").strip() or None
             built.append(RemoteAsset(
                 target=path.rsplit("/", 1)[-1],
@@ -101,6 +110,7 @@ def _build_manifests() -> Mapping[str, tuple[RemoteAsset, ...]]:
                 size=size,
                 sha256=sha256,
                 url=source_url,
+                url_candidates=url_candidates,
             ))
         # Apply the runtime file-name contract on top of the upstream names.
         renamed = []
@@ -115,6 +125,7 @@ def _build_manifests() -> Mapping[str, tuple[RemoteAsset, ...]]:
                         size=asset.size,
                         sha256=asset.sha256,
                         url=asset.url,
+                        url_candidates=asset.url_candidates,
                     )
                 )
             else:
