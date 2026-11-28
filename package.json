@@ -1,10 +1,10 @@
 {
-  "name": "koma",
-  "version": "1.0.0",
+  "name": "aian-studio",
+  "version": "1.0.1",
   "private": true,
-  "description": "KŌMA Studio — monorepo: Electron (v1) + Tauri (v2) + landing + auth-server + tools",
+  "description": "AiAN Studio — desktop scanlation workspace and local AI tooling",
   "license": "MIT",
-  "homepage": "https://koma-studio.site",
+  "homepage": "https://github.com/meishaven/manhwa-studio",
   "packageManager": "bun@1.4.0",
   "engines": {
     "bun": ">=1.4.0",

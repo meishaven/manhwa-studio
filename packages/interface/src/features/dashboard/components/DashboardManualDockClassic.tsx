@@ -18,6 +18,8 @@ import {
   Wand2,
   Sparkles,
   RefreshCcw,
+  PanelRightClose,
+  PanelRightOpen,
 } from 'lucide-react';
 import KlSlider from '../../../components/dashboard/KlSlider';
 import type {
@@ -32,6 +34,8 @@ import { getShortcutDisplayLabel } from '../../../shortcuts/keyboardShortcuts';
 
 export interface DashboardManualDockProps {
   manualDockRightOffset: number;
+  manualDockCollapsed: boolean;
+  setManualDockCollapsed: (collapsed: boolean) => void;
   manualToolsConfigVisible: boolean;
   manualToolsConfigTitle: string;
   setManualToolsConfigOpen: (open: boolean) => void;
@@ -274,6 +278,8 @@ const DockTooltipButton: React.FC<DockTooltipButtonProps> = React.memo(({
 
 export const DashboardManualDockClassic: React.FC<DashboardManualDockProps> = ({
   manualDockRightOffset,
+  manualDockCollapsed,
+  setManualDockCollapsed,
   manualToolsConfigVisible,
   manualToolsConfigTitle,
   setManualToolsConfigOpen,
@@ -633,6 +639,18 @@ export const DashboardManualDockClassic: React.FC<DashboardManualDockProps> = ({
       )}
 
       {/* ═══ Tool Palette Bar ═══ */}
+      {manualDockCollapsed ? (
+        <button
+          type="button"
+          className="koma-tool-palette__reopen"
+          style={{ right: manualDockRightOffset }}
+          onClick={() => setManualDockCollapsed(false)}
+          title={t('dashboard.dock.palette.show')}
+          aria-label={t('dashboard.dock.palette.show')}
+        >
+          <PanelRightOpen size={15} />
+        </button>
+      ) : (
       <TooltipProvider delayDuration={1000} skipDelayDuration={120}>
         <div
           className="koma-tool-palette"
@@ -641,6 +659,19 @@ export const DashboardManualDockClassic: React.FC<DashboardManualDockProps> = ({
           role="toolbar"
           aria-label={t('dashboard.dock.palette.ariaLabel')}
         >
+          <button
+            type="button"
+            className="koma-tool-palette__collapse"
+            onClick={() => {
+              setManualToolsConfigOpen(false);
+              setManualDockCollapsed(true);
+            }}
+            title={t('dashboard.dock.palette.hide')}
+            aria-label={t('dashboard.dock.palette.hide')}
+          >
+            <PanelRightClose size={13} />
+          </button>
+
           {/* Config Toggle */}
           <div className="koma-tool-palette__group">
             <DockTooltipButton
@@ -880,6 +911,7 @@ export const DashboardManualDockClassic: React.FC<DashboardManualDockProps> = ({
           </div>
         </div>
       </TooltipProvider>
+      )}
     </>
   );
 };

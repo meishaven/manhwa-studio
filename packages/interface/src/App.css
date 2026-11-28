@@ -27,6 +27,8 @@
 /* Noir type dock compact sizing */
 @import './themes/noir/type-dock-noir.css';
 @import './themes/noir/noir-app.css';
+/* Manhwa Studio neutral Fluent-inspired workspace baseline */
+@import './themes/manhwa-studio.css';
 
 @custom-variant dark (&:is(.dark *));
 

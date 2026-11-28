@@ -76,7 +76,6 @@ export function useDashboardUploads({
   invalidateAioPipelineHistory,
   warmupPayload,
 }: UseDashboardUploadsArgs) {
-  const activeId = useImageCollectionStore((s) => s.activeId);
   const isExtractingUploads = useImageCollectionStore(
     (s) => s.isExtractingUploads,
   );
@@ -392,8 +391,10 @@ export function useDashboardUploads({
           matches: duplicateMatches,
           resume: (keptImages) => {
             addImages([...keptImages]);
-            if (!useImageCollectionStore.getState().activeId && newImgs[0]) {
-              setActiveId(newImgs[0].id);
+            // A newly imported chapter should become the visible workspace,
+            // even when a different image was already selected before import.
+            if (keptImages[0]) {
+              setActiveId(keptImages[0].id);
             }
             invalidateAioPipelineHistory();
             clearPendingDuplicates();
@@ -403,14 +404,15 @@ export function useDashboardUploads({
         return;
       }
       addImages(newImgs);
-      if (!activeId && newImgs.length > 0 && newImgs[0]) setActiveId(newImgs[0].id);
+      // Prefer the first page of the incoming batch so imported chapters
+      // open immediately instead of leaving an older page active.
+      if (newImgs[0]) setActiveId(newImgs[0].id);
       invalidateAioPipelineHistory();
       setStatusMessage(composeImportStatusMessage(newImgs.length));
     } catch (error) {
       setStatusMessage(error instanceof Error ? error.message : 'Failed to load the images.');
     }
   }, [
-    activeId,
     addImages,
     clearPendingDuplicates,
     extractImagesFromChapterArchives,

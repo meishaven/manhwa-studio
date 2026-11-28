@@ -586,6 +586,8 @@ const RenderTextPreviewClassic = ({
     adjustSelectedRotation,
     nudgeSelectedRegion,
     dockVisible,
+    manualDockPosition,
+    onDockPositionChange,
   } = useRenderTextPreviewTypeDock({
     showRenderDock,
     dockAnchor,
@@ -883,7 +885,7 @@ const RenderTextPreviewClassic = ({
                 onClose={closeRegionPicker}
               />
 
-              {showRenderDock && dockAnchor && selectedRegion && dockVisible && createPortal((() => {
+              {showRenderDock && (dockAnchor || manualDockPosition) && selectedRegion && dockVisible && createPortal((() => {
                 const overlay = overlayRef.current;
                 const overlayRect = overlay?.getBoundingClientRect();
                 if (!overlayRect) {
@@ -891,13 +893,14 @@ const RenderTextPreviewClassic = ({
                 }
                 // Viewport coordinates: the dock is portaled to <body> so the
                 // stage's overflow cannot clip it against the sidebars.
-                const dockLeft = overlayRect.left + dockAnchor.x;
-                const dockTop = overlayRect.top + dockAnchor.y;
+                const resolvedDockAnchor = dockAnchor ?? { x: 0, y: 0, placement: 'bottom' as const };
+                const dockLeft = manualDockPosition?.left ?? overlayRect.left + resolvedDockAnchor.x;
+                const dockTop = manualDockPosition?.top ?? overlayRect.top + resolvedDockAnchor.y;
                 return (
                   <RenderTextPreviewTypeDock
                     dockLeft={dockLeft}
                     dockTop={dockTop}
-                    dockAnchor={dockAnchor}
+                    dockAnchor={resolvedDockAnchor}
                     dockRef={dockRef}
                     dockPointerDownRef={dockPointerDownRef}
                     isCompactViewport={isCompactViewport}
@@ -918,6 +921,7 @@ const RenderTextPreviewClassic = ({
                     saveCurrentSelection={saveCurrentSelection}
                     clearPickerState={clearPickerState}
                     syncInlineEditorSelection={syncInlineEditorSelection}
+                    onDockPositionChange={onDockPositionChange}
                   />
                 );
               })(), document.body)}

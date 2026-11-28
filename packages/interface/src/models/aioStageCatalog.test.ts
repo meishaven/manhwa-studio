@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  aioDeviceInfoSchema,
   buildAioStageCatalog,
   DEFAULT_AIO_STAGE_OPTIONS,
   isStageOptionSelectable,
@@ -34,6 +35,42 @@ function createOption(
     ...overrides,
   };
 }
+
+describe('aioDeviceInfoSchema', () => {
+  it('keeps the host CPU and memory details used by the local model advisor', () => {
+    const parsed = aioDeviceInfoSchema.parse({
+      name: 'CPU',
+      has_gpu: false,
+      provider: 'CPUExecutionProvider',
+      vram_gb: null,
+      cpu_name: 'Intel Core i5-4570',
+      cpu_cores: 4,
+      cpu_threads: 4,
+      ram_total_gb: 8,
+      ram_available_gb: 5.2,
+      architecture: 'AMD64',
+    });
+
+    expect(parsed).toMatchObject({
+      cpu_name: 'Intel Core i5-4570',
+      cpu_cores: 4,
+      cpu_threads: 4,
+      ram_total_gb: 8,
+      ram_available_gb: 5.2,
+      architecture: 'AMD64',
+    });
+  });
+
+  it('rejects malformed RAM values instead of trusting an invalid hardware snapshot', () => {
+    expect(() => aioDeviceInfoSchema.parse({
+      name: 'CPU',
+      has_gpu: false,
+      provider: 'CPUExecutionProvider',
+      vram_gb: null,
+      ram_total_gb: '8GB',
+    })).toThrow('Invalid AIO device info payload.');
+  });
+});
 
 describe('ocrStageOptionSupportsLanguage', () => {
   it.each([

@@ -8,6 +8,7 @@ import { useAioCloudPreviewStart } from '../hooks/use-aio-cloud-preview-start';
 import {
   ArrowRight,
   Bookmark,
+  CheckCircle2,
   Eraser,
   ExternalLink,
   Eye,
@@ -290,6 +291,10 @@ export default memo(function AioRightPanel({
       ? (s.aioManualProgressByImage[resolvedActiveId] ?? null)
       : null,
   );
+  const activeManualStageKey = activeManualProgress
+    ? (AIO_MANUAL_STAGE_ORDER[activeManualProgress.currentIndex] ?? null)
+    : null;
+  const isManualTranslationStep = activeManualStageKey === 'getTranslations';
   const aioDeviceInfo = useAioPipelineStore((s) => s.aioDeviceInfo);
   const aioMiniBackendRuntimeState = useAioPipelineStore(
     (s) => s.aioMiniBackendRuntimeState,
@@ -513,11 +518,29 @@ export default memo(function AioRightPanel({
                   !activeManualProgress ||
                   activeManualStageStatus === 'done'
                 }
-                title={t('dashboard.pipeline.skipStep.title')}
+                title={t(isManualTranslationStep ? 'dashboard.aio.skipTranslation' : 'dashboard.pipeline.skipStep.title')}
               >
-                {t('dashboard.aio.skip')}
+                {t(isManualTranslationStep ? 'dashboard.aio.skipTranslation' : 'dashboard.aio.skip')}
               </button>
             </div>
+
+            {activeManualProgress &&
+              activeManualProgress.currentIndex === AIO_MANUAL_STAGE_ORDER.length - 1 &&
+              (activeManualProgress.statusByStage.render === 'done' ||
+                activeManualProgress.statusByStage.render === 'skipped') && (
+                <div className="koma-aio-pipeline-controls">
+                  <button
+                    type="button"
+                    className={skin.primaryButton}
+                    onClick={() => handleAioSubModeChange('auto')}
+                    disabled={processing}
+                    title="Finish Manual AIO and return to Automatic mode"
+                    aria-label="Done with Manual AIO"
+                  >
+                    <CheckCircle2 size={13} /> Done
+                  </button>
+                </div>
+              )}
 
             {resolvedActiveId && activeManualProgress && (
               <p className="koma-aio-hint">
@@ -784,6 +807,9 @@ export default memo(function AioRightPanel({
           <Paintbrush size={13} className="koma-aio-info__icon" />
           <span>
             {t("dashboard.dashboardRegion.dockHint")}
+            {isManualTranslationStep && (
+              <> {' '}{t('dashboard.aio.manualTranslationHint')}</>
+            )}
           </span>
         </div>
       )}

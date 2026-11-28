@@ -195,6 +195,13 @@ class CachePruneRouteTests(unittest.TestCase):
                 hd_strategy="resize",
             )
             time.sleep(0.03)
+        # Materialize committed WAL pages into the database file before
+        # measuring its size. Otherwise prune can trigger SQLite's automatic
+        # checkpoint and grow the main file even though it never VACUUMs.
+        checkpoint = stage._conn.execute("PRAGMA wal_checkpoint(TRUNCATE)").fetchone()
+        self.assertIsNotNone(checkpoint)
+        self.assertEqual(checkpoint[0], 0)
+
         file_bytes_before = self.client.get("/diagnostics/cache-usage").json()[
             "stage_store"
         ]["file_size_bytes"]

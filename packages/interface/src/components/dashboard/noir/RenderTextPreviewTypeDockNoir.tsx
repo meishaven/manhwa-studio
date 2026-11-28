@@ -47,6 +47,7 @@ import { FillStylePopover } from '../../color/FillStylePopover';
 import { RenderEffectPopover } from '../../color/RenderEffectPopover';
 import { TextEffectPopover } from '../../color/TextEffectPopover';
 import { FontFamilySelect } from '../../fonts/FontFamilySelect';
+import RenderTextPreviewDockMoveHandle from '../render-text-preview/RenderTextPreviewDockMoveHandle';
 
 interface RenderTextPreviewTypeDockNoirProps {
   dockLeft: number;
@@ -79,6 +80,7 @@ interface RenderTextPreviewTypeDockNoirProps {
   saveCurrentSelection: () => { start: number; end: number } | null;
   clearPickerState: () => void;
   syncInlineEditorSelection: () => void;
+  onDockPositionChange: (position: { left: number; top: number } | null, persist?: boolean) => void;
 }
 
 /* ── Dock stepper (beta) ── */
@@ -234,6 +236,7 @@ const RenderTextPreviewTypeDockNoir = ({
   saveCurrentSelection,
   clearPickerState,
   syncInlineEditorSelection,
+  onDockPositionChange,
 }: RenderTextPreviewTypeDockNoirProps) => {
   const { t } = useI18n();
 
@@ -266,6 +269,15 @@ const RenderTextPreviewTypeDockNoir = ({
     >
       <div className="glass panel-cut relative flex w-full max-w-full flex-col gap-1 border-crimson/30 p-2 shadow-hard-crimson">
         <div className="halftone-red pointer-events-none absolute inset-0 opacity-10" aria-hidden="true" />
+<RenderTextPreviewDockMoveHandle
+          dockLeft={dockLeft}
+          dockTop={dockTop}
+          dockRef={dockRef}
+          dockPointerDownRef={dockPointerDownRef}
+          syncInlineEditorSelection={syncInlineEditorSelection}
+          onDockPositionChange={onDockPositionChange}
+          noir
+        />
 
         {/* ═══ Row 1: Primary ═══ */}
         <div className="relative flex items-center gap-1.5">

@@ -94,11 +94,7 @@ export const renderSettingsGeneralTab = ({
   setCurrentTheme,
   currentFamily,
   setCurrentFamily,
-  locale,
   localeLabels,
-  setLocale,
-  supportedLocales,
-  systemLocales,
   toolTipsEnabled,
   setToolTipsEnabled,
   customCursorEnabled,
@@ -247,37 +243,11 @@ export const renderSettingsGeneralTab = ({
       </svg>
       <h3 className="koma-stg-section__title">{t("settings.language.title")}</h3>
     </div>
-    <p className="koma-stg-section__desc">{t("settings.language.description")}</p>
-
-    <div className="koma-stg-grid">
-      <div className="koma-stg-item">
-        <span className="koma-stg-item__label">{t("settings.language.label")}</span>
-        <select
-          className="koma-ig-field__select"
-          value={locale}
-          onChange={(event) => setLocale(event.target.value as typeof locale)}
-          style={{ marginTop: 8 }}
-        >
-          {supportedLocales.map((entry) => (
-            <option key={entry} value={entry}>
-              {localeLabels[entry]}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="koma-stg-item">
-        <span className="koma-stg-item__label">{t("settings.language.systemLabel")}</span>
-        <span className="koma-stg-item__value">
-          {systemLocales.length > 0
-            ? systemLocales.map((entry) => localeLabels[entry]).join(", ")
-            : localeLabels[locale]}
-        </span>
-      </div>
+    <p className="koma-stg-section__desc">English is the fixed interface language for now. Your Windows and browser language will not change the app language.</p>
+    <div className="koma-stg-item">
+      <span className="koma-stg-item__label">{t("settings.language.label")}</span>
+      <span className="koma-stg-item__value">{localeLabels.en}</span>
     </div>
-
-    <p className="koma-stg-section__desc" style={{ marginTop: 12 }}>
-      {t("settings.language.applied")}
-    </p>
   </section>
 
   {/* Theme Family Selector (design system: classic / noir) */}

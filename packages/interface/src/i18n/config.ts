@@ -18,7 +18,7 @@ export const SUPPORTED_LOCALES = [
 export type AppLocale = (typeof SUPPORTED_LOCALES)[number];
 
 export const DEFAULT_APP_LOCALE = "en" satisfies AppLocale;
-export const LOCALE_STORAGE_KEY = "koma-studio.locale.v1";
+export const LOCALE_STORAGE_KEY = "aian-studio.locale.v1";
 
 export const RTL_LOCALES: ReadonlySet<AppLocale> = new Set<AppLocale>([
   "ar",

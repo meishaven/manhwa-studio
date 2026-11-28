@@ -10,6 +10,7 @@ interface DashboardStageGridProps {
   itemKey: (index: number) => string;
   onVisibleRangeChange?: (range: { start: number; end: number }) => void;
   focusIndexSignal?: { index: number; nonce: number } | null;
+  fallbackIndex?: number;
 }
 
 const DashboardStageGrid = ({
@@ -19,6 +20,7 @@ const DashboardStageGrid = ({
   itemKey,
   onVisibleRangeChange,
   focusIndexSignal,
+  fallbackIndex = 0,
 }: DashboardStageGridProps) => {
   if (itemCount === 0) return null;
 
@@ -30,6 +32,7 @@ const DashboardStageGrid = ({
   if (itemCount > 5) {
     return (
       <VirtualizedLongStrip
+        className="w-full min-w-0 col-span-full"
         itemCount={itemCount}
         estimatedItemHeight={viewMode === 'long_strip' ? 800 : 400}
         overscan={viewMode === 'long_strip' ? 2 : 3}
@@ -38,6 +41,7 @@ const DashboardStageGrid = ({
         renderItem={renderStageItem}
         onVisibleRangeChange={onVisibleRangeChange}
         focusIndexSignal={focusIndexSignal}
+        fallbackIndex={fallbackIndex}
       />
     );
   }

@@ -883,11 +883,60 @@ def freeze_provider_specs(
     return tuple(frozen)
 
 
+def _read_cpu_name() -> str | None:
+    """Return a friendly CPU name without adding a hardware-probe dependency."""
+    if os.name == "nt":
+        try:
+            import winreg  # type: ignore[import-not-found]  # Windows-only stdlib module
+
+            with winreg.OpenKey(
+                winreg.HKEY_LOCAL_MACHINE,
+                r"HARDWARE\DESCRIPTION\System\CentralProcessor\0",
+            ) as key:
+                value, _ = winreg.QueryValueEx(key, "ProcessorNameString")
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+        except (OSError, ImportError):
+            pass
+
+    for candidate in (platform.processor(), platform.uname().processor):
+        if candidate and candidate.strip():
+            return candidate.strip()
+    return None
+
+
+def _host_hardware_payload() -> dict[str, str | int | float | None]:
+    """Lightweight host facts used by the local model compatibility advisor."""
+    cpu_threads = os.cpu_count()
+    cpu_cores: int | None = None
+    ram_total_gb: float | None = None
+    ram_available_gb: float | None = None
+
+    try:
+        import psutil
+
+        cpu_cores = psutil.cpu_count(logical=False)
+        memory = psutil.virtual_memory()
+        ram_total_gb = round(memory.total / 1024**3, 2)
+        ram_available_gb = round(memory.available / 1024**3, 2)
+    except (ImportError, OSError, RuntimeError):
+        pass
+
+    return {
+        "cpu_name": _read_cpu_name(),
+        "cpu_cores": cpu_cores or cpu_threads,
+        "cpu_threads": cpu_threads,
+        "ram_total_gb": ram_total_gb,
+        "ram_available_gb": ram_available_gb,
+        "architecture": platform.machine() or None,
+    }
+
+
 def build_device_payload(
     device_info: DeviceInfo,
-) -> dict[str, str | bool | float | None | list[str]]:
+) -> dict[str, str | bool | int | float | None | list[str]]:
     available_providers = list(device_info.available_onnx_providers)
-    return {
+    payload: dict[str, str | bool | int | float | None | list[str]] = {
         "name": device_info.name,
         "has_gpu": device_info.has_gpu,
         "provider": device_info.onnx_provider,
@@ -901,6 +950,8 @@ def build_device_payload(
         "intel_openvino_available": "OpenVINOExecutionProvider" in available_providers,
         "amd_rocm_available": "ROCMExecutionProvider" in available_providers,
     }
+    payload.update(_host_hardware_payload())
+    return payload
 
 
 def build_cpu_device_info(

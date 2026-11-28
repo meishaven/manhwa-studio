@@ -264,6 +264,7 @@ export interface DashboardMainLayoutProps {
   getRootProps: UploadsApi['getRootProps'];
   getInputProps: UploadsApi['getInputProps'];
   isDragActive: boolean;
+  onDrop: UploadsApi['onDrop'];
   removeImage: ImageCollectionApi['removeImage'];
   activeImage: ImageCollectionState['images'][number] | null;
   modeLabel: string;
@@ -533,6 +534,7 @@ export default memo(function DashboardMainLayout({
   getRootProps,
   getInputProps,
   isDragActive,
+  onDrop,
   removeImage,
   activeImage,
   modeLabel,
@@ -908,6 +910,7 @@ export default memo(function DashboardMainLayout({
         getRootProps={getRootProps}
         getInputProps={getInputProps}
         isDragActive={isDragActive}
+        onDrop={onDrop}
         invalidateAioPipelineHistory={invalidateAioPipelineHistory}
         toggleDesktopSidebar={toggleDesktopSidebar}
         startSidebarResize={startSidebarResize}

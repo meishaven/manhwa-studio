@@ -1,28 +1,22 @@
-!macro customInit
-  !ifmacrodef setInstallModePerAllUsers
-    !insertmacro setInstallModePerAllUsers
-  !endif
-  StrCpy $INSTDIR "D:\KŌMA Studio"
-  IfFileExists "C:\*.*" 0 +2
-    StrCpy $INSTDIR "C:\KŌMA Studio"
-!macroend
+; AiAN Studio NSIS lifecycle hooks.
+; Do not override $INSTDIR here: electron-builder chooses the correct
+; per-machine Program Files location and uses the same path for shortcuts.
 
 !macro customUnInstall
-  DetailPrint "Closing KŌMA Studio processes..."
-  nsExec::ExecToLog 'taskkill /IM "KŌMA Studio.exe" /T /F'
+  DetailPrint "Closing AiAN Studio processes..."
+  nsExec::ExecToLog 'taskkill /IM "AiAN Studio.exe" /T /F'
   Pop $0
   nsExec::ExecToLog 'taskkill /IM "mini-backend.exe" /T /F'
   Pop $0
   Sleep 1200
 
-  ; Best-effort cleanup in case file locks prevented default removal.
+  ; Remove any remaining bundled backend files before NSIS removes the app dir.
   RMDir /r "$INSTDIR\resources\mini-backend"
-  RMDir /r "$INSTDIR\resources"
 !macroend
 
 !macro customUnInit
-  DetailPrint "Stopping running processes before uninstall..."
-  nsExec::ExecToLog 'taskkill /IM "KŌMA Studio.exe" /T /F'
+  DetailPrint "Stopping AiAN Studio processes before uninstall..."
+  nsExec::ExecToLog 'taskkill /IM "AiAN Studio.exe" /T /F'
   Pop $0
   nsExec::ExecToLog 'taskkill /IM "mini-backend.exe" /T /F'
   Pop $0

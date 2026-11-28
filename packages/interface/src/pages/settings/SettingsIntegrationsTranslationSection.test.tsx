@@ -8,8 +8,8 @@ import { installJsdomBrowserStubs } from "@/components/dashboard/renderTextPrevi
 import { buildAioStageCatalog, isStageOptionSelectable } from "@/models/aioStageCatalog";
 import { useAioPipelineStore } from "@/pages/dashboard/stores/aio-pipeline-store";
 import { WEBHOOK_EVENT_OPTIONS } from "@/services/discordWebhook";
-import type { BloggerConfig } from "@koma/types/blogger";
-import type { ImgurConfig, ImgurRateLimitStatus } from "@koma/types/imgur";
+import type { BloggerConfig } from "@shared/blogger";
+import type { ImgurConfig, ImgurRateLimitStatus } from "@shared/imgur";
 
 import { I18nProvider, useI18n } from "../../i18n";
 import { translateMessage } from "../../i18n/messages";

@@ -65,8 +65,10 @@ const writeWindowsIcon = () => {
   console.log(`[windows-icon] wrote ${iconPath}`);
 };
 
-if (shouldRebuildIcon()) {
+// The checked-in AiAN icon is canonical. Rebuild from source PNGs only
+// when explicitly requested, or when the ICO is missing (first-time setup).
+if (process.env.FORCE_REBUILD_WINDOWS_ICON === "1" || !fs.existsSync(iconPath)) {
   writeWindowsIcon();
 } else {
-  console.log(`[windows-icon] up to date: ${iconPath}`);
+  console.log(`[windows-icon] using checked-in icon: ${iconPath}`);
 }

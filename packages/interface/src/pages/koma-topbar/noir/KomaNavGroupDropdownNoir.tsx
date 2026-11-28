@@ -62,7 +62,7 @@ export default function KomaNavGroupDropdownNoir({
             aria-haspopup="menu"
             aria-expanded={isOpen}
             className={cn(
-              'panel-cut-sm group flex items-center gap-1.5 px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-wider transition-all duration-200',
+              'panel-cut-sm group flex shrink-0 items-center gap-1.5 px-2 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-wider transition-all duration-200 2xl:px-3',
               hasActive || isOpen
                 ? 'bg-gold text-ink shadow-hard-paper'
                 : 'bg-ink-3/60 text-paper-dim hover:-translate-x-0.5 hover:-translate-y-0.5 hover:text-paper hover:shadow-hard-gold',
@@ -70,7 +70,7 @@ export default function KomaNavGroupDropdownNoir({
           >
             {hasActive && <span className="h-1.5 w-1.5 bg-ink blink-noir" aria-hidden="true" />}
             <TriggerIcon size={13} />
-            <span>{triggerLabel}</span>
+            <span className="hidden 2xl:inline">{triggerLabel}</span>
             <ChevronDown size={11} className={cn('transition-transform duration-200', isOpen && 'rotate-180')} />
           </button>
         </TooltipTrigger>

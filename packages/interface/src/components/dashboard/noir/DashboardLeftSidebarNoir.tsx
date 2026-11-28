@@ -1,8 +1,7 @@
 import React from 'react';
-import { m, AnimatePresence } from 'framer-motion';
 import {
   Upload, Image as ImageIcon, Trash2, RotateCw, ArrowUp, ArrowDown,
-  X, Check, ListChecks, PanelLeftOpen, ChevronLeft, ChevronRight, SkipBack, SkipForward, RefreshCcw,
+  X, Check, ListChecks, PanelLeftOpen, ChevronLeft, ChevronRight, SkipBack, SkipForward, RefreshCcw, Database,
 } from 'lucide-react';
 
 import { useI18n, type TranslateFn } from '../../../i18n';
@@ -15,7 +14,6 @@ import {
   usePageDragReorder,
   type SidebarPageDragHandlers,
 } from '../DashboardLeftSidebarPageDragGuide';
-import { KomaMascotBadgeNoir } from './KomaMascotBadgeNoir';
 import { cn, formatImageDimensions } from '../../../utils/dashboard.utils';
 import { revokeLoadedImageUrls } from '../../../utils/imagePerformance';
 import { EMPTY_REGION_LIST } from '../../../utils/regionMapGating';
@@ -54,6 +52,7 @@ interface DashboardLeftSidebarProps {
   getRootProps: () => Record<string, unknown>;
   getInputProps: () => Record<string, unknown>;
   isDragActive: boolean;
+  onOpenSupabaseLibrary?: () => void;
   setImages: (images: LoadedImage[]) => void;
   setActiveId: (id: string | null) => void;
   invalidateAioPipelineHistory: () => void;
@@ -146,7 +145,7 @@ const SidebarImageItem = React.memo(function SidebarImageItem({
           className={cn(
             'panel-cut-sm grid h-4 w-4 shrink-0 place-items-center border',
             isSelected
-              ? 'border-crimson bg-crimson text-ink'
+              ? 'border-azure bg-azure text-ink'
               : 'border-paper/25 bg-ink',
           )}
         >
@@ -208,7 +207,7 @@ const SidebarImageItem = React.memo(function SidebarImageItem({
     isActive
       ? 'bg-crimson/15 shadow-hard-crimson ring-1 ring-crimson/40'
       : 'bg-ink-3/60 hover:-translate-x-0.5 hover:bg-ink-3 hover:shadow-hard-paper',
-    selectionMode && isSelected && 'bg-crimson/10 ring-1 ring-crimson/70',
+    selectionMode && isSelected && 'bg-azure/15 ring-1 ring-azure/80 border-azure/40',
   );
   const rowDomPropsPresent = rowDomProps !== undefined;
   const legacyDomProps = rowDomProps;
@@ -227,13 +226,8 @@ const SidebarImageItem = React.memo(function SidebarImageItem({
           {itemBody}
         </li>
       ) : (
-        <m.li
+        <li
           {...legacyDomProps}
-          layout
-          initial={{ opacity: 0, x: -12 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -12 }}
-          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
           onDragOver={dragHandlers.onDragOver}
           onDrop={dragHandlers.onDrop}
           onClick={() =>
@@ -242,7 +236,7 @@ const SidebarImageItem = React.memo(function SidebarImageItem({
           className={liClassName}
         >
           {itemBody}
-        </m.li>
+        </li>
       )}
     </>
   );
@@ -265,6 +259,7 @@ export default function DashboardLeftSidebarNoir({
   getRootProps,
   getInputProps,
   isDragActive,
+  onOpenSupabaseLibrary,
   setImages,
   setActiveId,
   invalidateAioPipelineHistory,
@@ -393,12 +388,12 @@ export default function DashboardLeftSidebarNoir({
 
       <div className="relative z-10 border-b border-paper/10 p-3">
         <div className="flex items-center gap-2.5">
-          <KomaMascotBadgeNoir />
+          <img src="/aian-mark.svg" alt="" className="h-9 w-9 shrink-0 rounded-xl object-contain" />
           <div className="min-w-0 flex-1 leading-none">
             <div className="flex flex-wrap items-center gap-1.5">
               <span className="font-display text-[14px] font-black uppercase tracking-tight text-paper">
-                {t('brand.name')}
-                <span className="font-serif-accent italic text-crimson"> {t('brand.studioSuffix')}</span>
+                AiAN
+                <span className="font-serif-accent italic text-crimson"> Studio</span>
               </span>
             </div>
             <VersionBadge />
@@ -465,6 +460,15 @@ export default function DashboardLeftSidebarNoir({
       <div className="relative flex min-h-0 flex-1 flex-col p-3">
         <div className="mb-2 flex items-center justify-between">
           <span className="kicker">// {t('dashboard.sidebar.files', { count: images.length })}</span>
+          <button
+            type="button"
+            title="Open Supabase Library"
+            aria-label="Open Supabase Library"
+            onClick={onOpenSupabaseLibrary}
+            className="panel-cut-sm grid h-6 w-6 place-items-center bg-ink-3 text-emerald-400 transition hover:bg-emerald-500 hover:text-ink"
+          >
+            <Database size={12} />
+          </button>
           {images.length > 0 && (
             <div className="flex items-center gap-1">
               <button
@@ -536,9 +540,7 @@ export default function DashboardLeftSidebarNoir({
                   </React.Fragment>
                 ))
               ) : (
-                <AnimatePresence initial={false}>
-                  {images.map((img) => renderImageItem(img))}
-                </AnimatePresence>
+                images.map((img) => renderImageItem(img))
               )}
             </ul>
           )}

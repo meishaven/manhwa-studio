@@ -1,0 +1,358 @@
+name: Build AiAN Studio for Windows
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  BUN_VERSION: "1.4.0"
+  VITE_AUTH_DISABLED: "true"
+  MINI_BACKEND_ARTIFACTS_PUBKEY: "HdJwZKhP6eGVAVUrWh5QdYtlEPW5kzqsbD9xRNlN98w="
+  KOMA_MINI_BACKEND_ARTIFACTS_PUBKEY: "HdJwZKhP6eGVAVUrWh5QdYtlEPW5kzqsbD9xRNlN98w="
+  CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+jobs:
+  windows-installer:
+    name: Windows x64 installer
+    runs-on: windows-latest
+    timeout-minutes: 120
+    env:
+      NODE_OPTIONS: "--max-old-space-size=6144"
+    steps:
+      - name: Check out AiAN Studio
+        uses: actions/checkout@v7
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        run: python -m pip install uv
+
+      - name: Install workspace dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build CPU mini-backend
+        working-directory: apps/electron
+        env:
+          MINI_BACKEND_ACCELERATION_PROFILE: cpu
+        run: bun run build:mini
+
+      - name: Build AiAN Studio application
+        working-directory: apps/electron
+        run: bun run build:app
+
+      - name: Build standalone Windows installer
+        working-directory: apps/electron
+        # Use the fixed v26 builder and the newer NSIS 3.12 toolset.
+        env:
+          DEBUG: electron-builder:7z
+        run: npx --yes electron-builder@26.17.0 --win nsis --x64 --publish never --config.forceCodeSigning=false --config.directories.output=release-desktop/ci
+
+      - name: Verify installer exists
+        shell: pwsh
+        run: |
+          $unpackedDir = "apps/electron/release-desktop/ci/win-unpacked"
+          $unpackedExe = Join-Path $unpackedDir "AiAN Studio.exe"
+          if (-not (Test-Path -LiteralPath $unpackedExe -PathType Leaf)) {
+            throw "The unpacked Windows app executable is missing before NSIS packaging."
+          }
+          $installers = Get-ChildItem "apps/electron/release-desktop/ci" -Filter "*.exe" -File
+          if (-not $installers -or $installers.Count -eq 0) {
+            throw "No Windows installer .exe was produced."
+          }
+          $installers | ForEach-Object {
+            if ($_.Length -lt 1MB) { throw "Installer looks unexpectedly small: $($_.Name)" }
+            Write-Host ("Installer: {0} ({1:N1} MB)" -f $_.Name, ($_.Length / 1MB))
+          }
+
+      - name: Inspect embedded application package
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $diagnosticDir = Join-Path $env:RUNNER_TEMP "AiANStudioDiagnostics"
+          New-Item -ItemType Directory -Force -Path $diagnosticDir | Out-Null
+          $installer = Get-ChildItem "apps/electron/release-desktop/ci" -Filter "AiAN-Studio-*-win-x64.exe" -File |
+            Select-Object -First 1
+          $sourceExe = "apps/electron/release-desktop/ci/win-unpacked/AiAN Studio.exe"
+          if (-not $installer -or -not (Test-Path -LiteralPath $sourceExe -PathType Leaf)) {
+            throw "Installer or unpacked application executable is missing before archive inspection."
+          }
+
+          $source = Get-Item -LiteralPath $sourceExe
+          $sourceHash = (Get-FileHash -LiteralPath $sourceExe -Algorithm SHA256).Hash
+          @(
+            "Installer: $($installer.FullName)"
+            "Installer size: $($installer.Length)"
+            "Unpacked executable size: $($source.Length)"
+            "Unpacked executable SHA256: $sourceHash"
+          ) | Set-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+
+          $sevenZipPath = Join-Path $env:ProgramFiles "7-Zip\7z.exe"
+          if (-not (Test-Path -LiteralPath $sevenZipPath)) {
+            try {
+              choco install 7zip.install --yes --no-progress
+            } catch {
+              Write-Warning "Could not install 7-Zip for payload inspection: $($_.Exception.Message)"
+            }
+          }
+          if (-not (Test-Path -LiteralPath $sevenZipPath)) {
+            Write-Warning "7-Zip executable is unavailable; installer archive listing was skipped."
+            exit 0
+          }
+
+          $listingPath = Join-Path $diagnosticDir "installer-7z-list.txt"
+          & $sevenZipPath l -slt $installer.FullName 2>&1 |
+            Out-File -LiteralPath $listingPath -Encoding utf8
+          $listExit = $LASTEXITCODE
+          "7-Zip installer listing exit code: $listExit" |
+            Add-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+
+          $extractDir = Join-Path $diagnosticDir "installer-extracted"
+          New-Item -ItemType Directory -Force -Path $extractDir | Out-Null
+          $extractLog = Join-Path $diagnosticDir "installer-extract.txt"
+          & $sevenZipPath x $installer.FullName "-o$extractDir" -y 2>&1 |
+            Out-File -LiteralPath $extractLog -Encoding utf8
+          $extractExit = $LASTEXITCODE
+          "7-Zip installer extraction exit code: $extractExit" |
+            Add-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+
+          $appArchives = @(Get-ChildItem -LiteralPath $extractDir -Filter "app-64.7z" -Recurse -File -ErrorAction SilentlyContinue)
+          if ($appArchives.Count -eq 0) {
+            $appArchives = @(Get-ChildItem -LiteralPath $extractDir -Filter "app-*.7z" -Recurse -File -ErrorAction SilentlyContinue)
+          }
+          if ($appArchives.Count -eq 0) {
+            Write-Warning "No embedded app-*.7z archive was exposed by 7-Zip. Listing and extraction logs were saved."
+            exit 0
+          }
+
+          $appArchive = $appArchives[0]
+          "Embedded app archive: $($appArchive.FullName)" |
+            Add-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+          $appListing = Join-Path $diagnosticDir "app-package-7z-list.txt"
+          & $sevenZipPath l -slt $appArchive.FullName 2>&1 |
+            Out-File -LiteralPath $appListing -Encoding utf8
+          $appListExit = $LASTEXITCODE
+          "Embedded app archive listing exit code: $appListExit" |
+            Add-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+
+          $appExtractDir = Join-Path $diagnosticDir "app-package-extracted"
+          New-Item -ItemType Directory -Force -Path $appExtractDir | Out-Null
+          $appExtractLog = Join-Path $diagnosticDir "app-package-extract.txt"
+          & $sevenZipPath x $appArchive.FullName "-o$appExtractDir" -y 2>&1 |
+            Out-File -LiteralPath $appExtractLog -Encoding utf8
+          $appExtractExit = $LASTEXITCODE
+          "Embedded app archive extraction exit code: $appExtractExit" |
+            Add-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+
+          $embeddedExe = Get-ChildItem -LiteralPath $appExtractDir -Filter "AiAN Studio.exe" -Recurse -File -ErrorAction SilentlyContinue |
+            Select-Object -First 1
+          if ($embeddedExe) {
+            $embeddedHash = (Get-FileHash -LiteralPath $embeddedExe.FullName -Algorithm SHA256).Hash
+            @(
+              "Embedded executable path: $($embeddedExe.FullName)"
+              "Embedded executable size: $($embeddedExe.Length)"
+              "Embedded executable SHA256: $embeddedHash"
+              "Embedded executable matches source: $($embeddedHash -eq $sourceHash)"
+            ) | Add-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+          } else {
+            "Embedded application executable was not found after manual archive extraction." |
+              Add-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt")
+          }
+
+          Write-Host "=== Installer payload summary ==="
+          Get-Content -LiteralPath (Join-Path $diagnosticDir "source-summary.txt") |
+            ForEach-Object { Write-Host $_ }
+          if (Test-Path -LiteralPath $appListing) {
+            Write-Host "=== Executable and native-binary entries in embedded app archive ==="
+            $entryLines = Select-String -Path $appListing -Pattern "AiAN Studio\\.exe|Path = .*\\.(exe|dll|node)$|Method =" |
+              Select-Object -First 100
+            if ($entryLines.Count -eq 0) {
+              Write-Host "No executable, DLL, or native-module entries found in the app archive listing."
+            } else {
+              $entryLines | ForEach-Object { Write-Host $_.Line }
+            }
+          }
+
+          # Do not include extracted copies of the 400+ MB payload in the diagnostic artifact.
+          Remove-Item -LiteralPath $extractDir, $appExtractDir -Recurse -Force -ErrorAction SilentlyContinue
+
+      - name: Smoke-test Windows installer and shortcuts
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem "apps/electron/release-desktop/ci" -Filter "*.exe" -File |
+            Where-Object { $_.Name -notlike "*uninstaller*" } |
+            Select-Object -First 1
+          if (-not $installer) { throw "Installer EXE is missing before smoke test." }
+
+          $installDir = Join-Path $env:RUNNER_TEMP "AiANStudioSmokeTest"
+          if (Test-Path -LiteralPath $installDir) {
+            Remove-Item -LiteralPath $installDir -Recurse -Force
+          }
+
+          $arguments = "/S /D=$installDir"
+          $process = Start-Process -FilePath $installer.FullName -ArgumentList $arguments -PassThru -Wait
+          if ($process.ExitCode -ne 0) {
+            throw "Silent install failed with exit code $($process.ExitCode)."
+          }
+
+          $appExe = Join-Path $installDir "AiAN Studio.exe"
+          if (-not (Test-Path -LiteralPath $appExe -PathType Leaf)) {
+            $diagnosticDir = Join-Path $env:RUNNER_TEMP "AiANStudioDiagnostics"
+            New-Item -ItemType Directory -Force -Path $diagnosticDir | Out-Null
+
+            Write-Host "Checking for the executable anywhere under the install directory..."
+            $nestedMatches = @(Get-ChildItem -LiteralPath $installDir -Filter "AiAN Studio.exe" -Recurse -File -ErrorAction SilentlyContinue)
+            if ($nestedMatches.Count -gt 0) {
+              $nestedMatches | Select-Object FullName, Length |
+                Format-Table -AutoSize |
+                Out-String |
+                Set-Content -LiteralPath (Join-Path $diagnosticDir "nested-executable-search.txt")
+            } else {
+              "No AiAN Studio.exe exists anywhere under $installDir" |
+                Set-Content -LiteralPath (Join-Path $diagnosticDir "nested-executable-search.txt")
+            }
+
+            try {
+              $detections = Get-MpThreatDetection -ErrorAction Stop | Where-Object {
+                ($_.Resources -join " ") -match "AiAN Studio|AiANStudioSmokeTest"
+              }
+              $detections | Format-List * |
+                Out-String |
+                Set-Content -LiteralPath (Join-Path $diagnosticDir "defender-threat-detections.txt")
+              if (@($detections).Count -eq 0) {
+                "No matching Get-MpThreatDetection entries were returned." |
+                  Set-Content -LiteralPath (Join-Path $diagnosticDir "defender-threat-detections.txt")
+              }
+            } catch {
+              "Defender threat query unavailable: $($_.Exception.Message)" |
+                Set-Content -LiteralPath (Join-Path $diagnosticDir "defender-threat-detections.txt")
+            }
+
+            try {
+              $since = (Get-Date).AddMinutes(-30)
+              Get-WinEvent -FilterHashtable @{
+                LogName = "Microsoft-Windows-Windows Defender/Operational"
+                StartTime = $since
+              } -ErrorAction Stop |
+                Where-Object { $_.Id -in 1116, 1117, 1121, 1122 } |
+                Select-Object TimeCreated, Id, LevelDisplayName, Message |
+                Format-List |
+                Out-String |
+                Set-Content -LiteralPath (Join-Path $diagnosticDir "defender-operational-events.txt")
+            } catch {
+              "Defender event log query unavailable: $($_.Exception.Message)" |
+                Set-Content -LiteralPath (Join-Path $diagnosticDir "defender-operational-events.txt")
+            }
+
+            Write-Host "Top-level files found in the install directory:"
+            if (Test-Path -LiteralPath $installDir) {
+              Get-ChildItem -LiteralPath $installDir -Force |
+                Select-Object -First 40 Name, Length, Mode |
+                Format-Table -AutoSize |
+                Out-String |
+                Write-Host
+            }
+            $unpackedExe = "apps/electron/release-desktop/ci/win-unpacked/AiAN Studio.exe"
+            if (Test-Path -LiteralPath $unpackedExe -PathType Leaf) {
+              $source = Get-Item -LiteralPath $unpackedExe
+              Write-Host ("Unpacked source executable exists: {0:N1} MB" -f ($source.Length / 1MB))
+            }
+            throw "Installer did not place AiAN Studio.exe in the selected install directory."
+          }
+
+          $shortcutRoots = @(
+            "$env:ProgramData\Microsoft\Windows\Start Menu\Programs",
+            "$env:Public\Desktop",
+            "$env:USERPROFILE\Desktop"
+          ) | Where-Object { Test-Path -LiteralPath $_ }
+
+          $shell = New-Object -ComObject WScript.Shell
+          $matchingShortcuts = @()
+          foreach ($root in $shortcutRoots) {
+            $links = Get-ChildItem -LiteralPath $root -Filter "*.lnk" -Recurse -File -ErrorAction SilentlyContinue
+            foreach ($link in $links) {
+              $shortcut = $shell.CreateShortcut($link.FullName)
+              if ($shortcut.TargetPath -and
+                  ([System.IO.Path]::GetFullPath($shortcut.TargetPath) -ieq [System.IO.Path]::GetFullPath($appExe))) {
+                $matchingShortcuts += $link.FullName
+              }
+            }
+          }
+
+          if ($matchingShortcuts.Count -eq 0) {
+            throw "Installer put the EXE in place but did not create a shortcut pointing to it."
+          }
+
+          Write-Host "Installed executable: $appExe"
+          Write-Host "Verified shortcuts:"
+          $matchingShortcuts | ForEach-Object { Write-Host $_ }
+
+      - name: Upload installer diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: AiAN-Studio-Installer-Diagnostics
+          path: |
+            ${{ runner.temp }}/AiANStudioDiagnostics/*.txt
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: AiAN-Studio-Windows-x64
+          path: |
+            apps/electron/release-desktop/ci/*.exe
+            apps/electron/release-desktop/ci/*.blockmap
+            apps/electron/release-desktop/ci/latest.yml
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Publish standalone installer as GitHub Release asset
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $installer = Get-ChildItem "apps/electron/release-desktop/ci" -Filter "*.exe" -File | Select-Object -First 1
+          if (-not $installer) { throw "Windows installer .exe is missing." }
+          $package = Get-Content "apps/electron/package.json" -Raw | ConvertFrom-Json
+          $appVersion = [string]$package.version
+          if ($appVersion -notmatch '^\d+\.\d+\.\d+(-beta\.\d+)?$') {
+            throw "Invalid AiAN app version in apps/electron/package.json: $appVersion"
+          }
+          $tag = "aian-studio-v$($appVersion)-build-${{ github.run_number }}"
+          $title = "AiAN Studio $appVersion - Windows x64"
+          $notes = "AiAN Studio $appVersion Windows x64 installer built by GitHub Actions."
+          $latest = "apps/electron/release-desktop/ci/latest.yml"
+          if (-not (Test-Path -LiteralPath $latest -PathType Leaf)) { throw "Updater metadata latest.yml is missing." }
+          $blockmaps = @(Get-ChildItem "apps/electron/release-desktop/ci" -Filter "*.blockmap" -File | ForEach-Object { $_.FullName })
+          $releaseAssets = @($installer.FullName, $latest) + $blockmaps
+          gh release create $tag @releaseAssets --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title $title --notes $notes
+) {
+            throw "Invalid AiAN app version in apps/electron/package.json: $appVersion"
+          }
+          $tag = "aian-studio-v$($appVersion)-build-${{ github.run_number }}"
+          $title = "AiAN Studio $appVersion - Windows x64"
+          $notes = "AiAN Studio $appVersion Windows x64 installer built by GitHub Actions."
+          $latest = "apps/electron/release-desktop/ci/latest.yml"
+          if (-not (Test-Path -LiteralPath $latest -PathType Leaf)) { throw "Updater metadata latest.yml is missing." }
+          $blockmaps = @(Get-ChildItem "apps/electron/release-desktop/ci" -Filter "*.blockmap" -File | ForEach-Object { $_.FullName })
+          $releaseAssets = @($installer.FullName, $latest) + $blockmaps
+          gh release create $tag @releaseAssets --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title $title --notes $notes

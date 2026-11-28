@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
-import { Layers, X, CheckCircle2, AlertTriangle, Sparkles, Plus } from 'lucide-react';
+import { Layers, X, CheckCircle2, AlertTriangle, Sparkles, Plus, Cpu, MemoryStick, Monitor, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
 import { useI18n } from '../../../i18n';
 import { useMiniBackendRuntimeStatus } from '../../../hooks/useMiniBackendRuntimeStatus';
 import { isMiniBackendRuntimeServing, isMiniBackendRuntimeStarting } from '../../../utils/miniBackendRuntime';
@@ -25,6 +25,8 @@ import { InstallAllConfirmation } from '../InstallAllConfirmation';
 import { ModelCard } from '../ModelCard';
 import { ModelFilters } from '../ModelFilters';
 import { ALL_AIO_LOCAL_STAGES, buildMultiStageInstallSummary } from '../recommendedInstall';
+import { assessModelHardwareFit } from '../../../models/model-hardware-fit';
+import { useModelHardwareProfile } from '../useModelHardwareProfile';
 
 export interface ModelManagerModalProps {
   open: boolean;
@@ -158,10 +160,18 @@ export const ModelManagerModalNoir = ({
   onCheckUpdatesNow,
 }: ModelManagerModalProps) => {
   const { t } = useI18n();
+  const {
+    deviceInfo,
+    loading: hardwareLoading,
+    failed: hardwareFailed,
+    refresh: refreshHardware,
+  } = useModelHardwareProfile(open);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [hardwarePanelExpanded, setHardwarePanelExpanded] = useState(true);
   const [sourceFilter, setSourceFilter] = useState<ModelFilterState['source']>(
-    initialSourceFilter ?? (enableCloudCatalog ? 'all' : 'local'),
+    initialSourceFilter ?? 'local',
   );
+  const [showRecommendedOnly, setShowRecommendedOnly] = useState(false);
   const [statusFilter, setStatusFilter] =
     useState<ModelFilterState['status']>('all');
   const [showCustom, setShowCustom] = useState(false);
@@ -187,6 +197,10 @@ export const ModelManagerModalNoir = ({
       if (localStageFilter && e.model.stage !== localStageFilter) return false;
       if (!statusMatchesFilter(e, statusFilter)) return false;
       if (!languageMatchesFilter(e, languageFilter)) return false;
+      if (
+        showRecommendedOnly &&
+        assessModelHardwareFit(e.model, deviceInfo).status !== 'recommended'
+      ) return false;
       return true;
     });
   }, [
@@ -195,19 +209,49 @@ export const ModelManagerModalNoir = ({
     languageFilter,
     localStageFilter,
     statusFilter,
+    deviceInfo,
+    showRecommendedOnly,
   ]);
 
   const hasLocal = filteredLocal.length > 0;
 
+  const hardwareFitCounts = useMemo(() => {
+    const counts = { recommended: 0, caution: 0, avoid: 0 };
+    if (!deviceInfo) return counts;
+
+    Object.values(entries).forEach((entry) => {
+      if (localStageFilter && entry.model.stage !== localStageFilter) return;
+      if (!languageMatchesFilter(entry, languageFilter)) return;
+      const fit = assessModelHardwareFit(entry.model, deviceInfo);
+      if (fit.status === 'recommended') counts.recommended += 1;
+      if (fit.status === 'caution') counts.caution += 1;
+      if (fit.status === 'avoid') counts.avoid += 1;
+    });
+    return counts;
+  }, [deviceInfo, entries, languageFilter, localStageFilter]);
+
   const multiStageSummary = useMemo(() => {
-    return buildMultiStageInstallSummary(
+    const summary = buildMultiStageInstallSummary(
       entries,
       ALL_AIO_LOCAL_STAGES,
       languageFilter,
       defaultTargetLanguage,
       estimateModelRequiredDiskBytes,
     );
-  }, [defaultTargetLanguage, entries, languageFilter]);
+    if (!deviceInfo) return summary;
+
+    // Keep the existing catalogue and language recommendations intact, but
+    // omit clearly unsafe models from bulk installation on this PC.
+    const eligibleModelIds = summary.eligibleModelIds.filter((id) => {
+      const model = entries[id]?.model;
+      return model && assessModelHardwareFit(model, deviceInfo).status !== 'avoid';
+    });
+    const totalBytes = eligibleModelIds.reduce((total, id) => {
+      const model = entries[id]?.model;
+      return total + (model ? estimateModelRequiredDiskBytes(model) : 0);
+    }, 0);
+    return { ...summary, eligibleModelIds, totalBytes, requiredBytes: totalBytes };
+  }, [defaultTargetLanguage, deviceInfo, entries, languageFilter]);
 
   const eligibleStages = useMemo(
     () =>
@@ -342,6 +386,131 @@ export const ModelManagerModalNoir = ({
                 </div>
               </div>
             )}
+
+            {/* ═══ LOCAL HARDWARE PROFILE ═══ */}
+            <section className="mx-5 mt-4 border border-paper/10 bg-ink/55 p-4 sm:mx-6">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-2">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center border border-mint/30 bg-mint/10 text-mint">
+                    <Cpu size={15} />
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="font-display text-sm font-bold uppercase tracking-wide text-paper">
+                      {t('modelHardware.title')}
+                    </h3>
+                    <p className="font-mono text-[9px] uppercase tracking-wider text-paper/40">
+                      {t('modelHardware.subtitle')}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setHardwarePanelExpanded((value) => !value)}
+                    aria-expanded={hardwarePanelExpanded}
+                    aria-label={t(hardwarePanelExpanded ? 'modelHardware.hideDetails' : 'modelHardware.showDetails')}
+                    className="inline-flex items-center gap-1 border border-paper/15 px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-wider text-paper/65 transition-colors hover:border-mint/40 hover:text-paper"
+                  >
+                    {t(hardwarePanelExpanded ? 'modelHardware.hideDetails' : 'modelHardware.showDetails')}
+                    {hardwarePanelExpanded ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void refreshHardware()}
+                    disabled={hardwareLoading}
+                    className="inline-flex items-center gap-1.5 border border-paper/15 px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-wider text-paper/65 hover:text-paper disabled:opacity-40"
+                  >
+                    <RefreshCw size={11} className={hardwareLoading ? 'animate-spin' : ''} />
+                    {t(hardwareLoading ? 'modelHardware.status.refreshing' : 'modelHardware.refresh')}
+                  </button>
+                </div>
+              </div>
+
+              {hardwarePanelExpanded && (deviceInfo ? (
+                <>
+                  <div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+                    <div className="min-w-0 border border-paper/8 bg-ink/60 p-2.5">
+                      <div className="mb-1 flex items-center gap-1.5 text-paper/40">
+                        <Cpu size={11} />
+                        <span className="font-mono text-[9px] uppercase tracking-wider">{t('modelHardware.processor')}</span>
+                      </div>
+                      <p className="truncate text-xs font-semibold text-paper" title={deviceInfo.cpu_name ?? deviceInfo.name}>
+                        {deviceInfo.cpu_name || deviceInfo.name}
+                      </p>
+                      <p className="mt-0.5 font-mono text-[9px] text-paper/45">
+                        {t('modelHardware.cores', {
+                          cores: deviceInfo.cpu_cores ?? '—',
+                          threads: deviceInfo.cpu_threads ?? '—',
+                        })}
+                      </p>
+                    </div>
+                    <div className="min-w-0 border border-paper/8 bg-ink/60 p-2.5">
+                      <div className="mb-1 flex items-center gap-1.5 text-paper/40">
+                        <MemoryStick size={11} />
+                        <span className="font-mono text-[9px] uppercase tracking-wider">{t('modelHardware.ram')}</span>
+                      </div>
+                      <p className="text-xs font-semibold text-paper">
+                        {t('modelHardware.ramSummary', {
+                          available: deviceInfo.ram_available_gb?.toFixed(1) ?? '—',
+                          total: deviceInfo.ram_total_gb?.toFixed(1) ?? '—',
+                        })}
+                      </p>
+                    </div>
+                    <div className="min-w-0 border border-paper/8 bg-ink/60 p-2.5">
+                      <div className="mb-1 flex items-center gap-1.5 text-paper/40">
+                        <Monitor size={11} />
+                        <span className="font-mono text-[9px] uppercase tracking-wider">{t('modelHardware.acceleration')}</span>
+                      </div>
+                      <p className="truncate text-xs font-semibold text-paper" title={deviceInfo.profile ?? deviceInfo.provider}>
+                        {deviceInfo.nvidia_cuda_available
+                          ? 'NVIDIA CUDA'
+                          : deviceInfo.amd_rocm_available
+                            ? 'AMD ROCm'
+                            : deviceInfo.intel_openvino_available
+                              ? 'Intel OpenVINO'
+                              : deviceInfo.profile || deviceInfo.provider}
+                      </p>
+                      {!deviceInfo.has_gpu && (
+                        <p className="mt-0.5 font-mono text-[9px] text-paper/45">
+                          {t('modelHardware.cpuFirst')}
+                        </p>
+                      )}
+                    </div>
+                    <div className="min-w-0 border border-paper/8 bg-ink/60 p-2.5">
+                      <div className="mb-1 font-mono text-[9px] uppercase tracking-wider text-paper/40">
+                        {t('modelHardware.fit.recommended')}
+                      </div>
+                      <p className="text-xs font-semibold text-mint">{hardwareFitCounts.recommended}</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-mono text-[9px] text-paper/40">
+                      {t('modelHardware.summary', hardwareFitCounts)}
+                    </p>
+                    <button
+                      type="button"
+                      aria-pressed={showRecommendedOnly}
+                      onClick={() => setShowRecommendedOnly((value) => !value)}
+                      className={`border px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-wider transition-colors ${
+                        showRecommendedOnly
+                          ? 'border-mint/50 bg-mint/10 text-mint'
+                          : 'border-paper/15 text-paper/60 hover:text-paper'
+                      }`}
+                    >
+                      {t(showRecommendedOnly ? 'modelHardware.showAll' : 'modelHardware.showFits')}
+                    </button>
+                  </div>
+                  <p className="mt-2 font-mono text-[9px] leading-relaxed text-paper/35">
+                    {t('modelHardware.estimateNote')}
+                  </p>
+                </>
+              ) : (
+                <p className="mt-3 border border-dashed border-paper/15 p-3 font-mono text-[10px] text-paper/50">
+                  {t(hardwareLoading ? 'modelHardware.loading' : 'modelHardware.unavailable')}
+                  {hardwareFailed ? ' ' : ''}
+                </p>
+              ))}
+            </section>
 
             {/* ═══ FILTERS ═══ */}
             <ModelFilters

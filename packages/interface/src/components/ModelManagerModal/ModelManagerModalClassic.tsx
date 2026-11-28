@@ -141,7 +141,7 @@ export const ModelManagerModalClassic = ({
     runtimeState !== null && isMiniBackendRuntimeStarting(runtimeState.status);
   const [showConfirm, setShowConfirm] = useState(false);
   const [sourceFilter, setSourceFilter] = useState<ModelFilterState['source']>(
-    initialSourceFilter ?? (enableCloudCatalog ? 'all' : 'local'),
+    initialSourceFilter ?? 'local',
   );
   const [statusFilter, setStatusFilter] =
     useState<ModelFilterState['status']>('all');

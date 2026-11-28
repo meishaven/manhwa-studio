@@ -458,6 +458,48 @@
   padding: 8px 10px;
 }
 
+/* ── Batch chapter preset select: readable native option menu ───── */
+.koma-aio-chapter-select {
+  color-scheme: dark;
+  border-color: rgba(168, 85, 247, 0.38);
+  background-color: #111522;
+  color: #f1f5f9;
+}
+
+.koma-aio-chapter-select option,
+.koma-aio-chapter-select optgroup {
+  background-color: #111522;
+  color: #f1f5f9;
+}
+
+.koma-aio-chapter-select option:checked {
+  background-color: #6d28d9;
+  color: #ffffff;
+}
+
+.koma-aio-chapter-select:focus-visible {
+  outline: 2px solid rgba(168, 85, 247, 0.85);
+  outline-offset: 1px;
+}
+
+[data-theme="light"] .koma-aio-chapter-select {
+  color-scheme: light;
+  border-color: rgba(109, 40, 217, 0.35);
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
+[data-theme="light"] .koma-aio-chapter-select option,
+[data-theme="light"] .koma-aio-chapter-select optgroup {
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
+[data-theme="light"] .koma-aio-chapter-select option:checked {
+  background-color: #6d28d9;
+  color: #ffffff;
+}
+
 /* ── Stage Tabs ────────────────────────────────────────────────── */
 .koma-aio-stage-tabs__bar {
   display: flex;
