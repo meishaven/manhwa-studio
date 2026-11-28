@@ -380,12 +380,7 @@ const readClientIdFromEnvFile = (filePath: string): string | null => {
       const key = trimmed.slice(0, separatorIndex).trim();
       const rawValue = trimmed.slice(separatorIndex + 1).trim();
 
-      if (
-        key === "AIAN_DISCORD_CLIENT_ID" ||
-        key === "DISCORD_RPC_CLIENT_ID" ||
-        key === "DISCORD_CLIENT_ID" ||
-        key === "VITE_DISCORD_CLIENT_ID"
-      ) {
+      if (key === "AIAN_DISCORD_CLIENT_ID") {
         return toEnvValue(rawValue);
       }
     }
@@ -448,9 +443,7 @@ const resolveDesktopConfigValue = (key: string): string | null => {
   for (const envFile of envCandidates) {
     const value = readClientIdFromEnvFile(envFile);
     if (value) {
-      return key === "AIAN_DISCORD_CLIENT_ID" || key === "DISCORD_RPC_CLIENT_ID" || key === "DISCORD_CLIENT_ID" || key === "VITE_DISCORD_CLIENT_ID"
-        ? value
-        : readValueFromEnvFile(envFile, key);
+      return key === "AIAN_DISCORD_CLIENT_ID" ? value : readValueFromEnvFile(envFile, key);
     }
     const otherValue = readValueFromEnvFile(envFile, key);
     if (otherValue) {
@@ -488,11 +481,7 @@ const readValueFromEnvFile = (filePath: string, key: string): string | null => {
 };
 
 const resolveDiscordClientId = (): string | null => {
-  const fromProcess =
-    resolveDesktopConfigValue("AIAN_DISCORD_CLIENT_ID") ??
-    resolveDesktopConfigValue("DISCORD_RPC_CLIENT_ID") ??
-    resolveDesktopConfigValue("DISCORD_CLIENT_ID") ??
-    resolveDesktopConfigValue("VITE_DISCORD_CLIENT_ID");
+  const fromProcess = resolveDesktopConfigValue("AIAN_DISCORD_CLIENT_ID");
 
   if (fromProcess) {
     return fromProcess;
