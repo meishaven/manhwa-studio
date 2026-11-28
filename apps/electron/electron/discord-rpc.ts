@@ -108,7 +108,8 @@ interface Nich87ActivityPayload {
 const MAX_BUTTONS = 2;
 const MAX_TEXT_LENGTH = 128;
 const MIN_ACTIVITY_UPDATE_INTERVAL_MS = 250;
-const DEFAULT_DISCORD_CLIENT_ID = "";
+// Public Application ID supplied by the AiAN Studio maintainer.
+const DEFAULT_DISCORD_CLIENT_ID = "1576091321540804769";
 
 const DEFAULT_AIAN_WEBSITE_URL = "https://github.com/meishaven/manhwa-studio";
 const DEFAULT_AIAN_DOWNLOAD_URL = "https://github.com/meishaven/manhwa-studio/releases/latest";
