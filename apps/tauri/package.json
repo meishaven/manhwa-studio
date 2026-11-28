@@ -1,5 +1,5 @@
 {
-  "name": "@aian-studio/tauri",
+  "name": "@koma/tauri",
   "version": "1.0.1",
   "packageManager": "bun@1.4.0",
   "engines": {
