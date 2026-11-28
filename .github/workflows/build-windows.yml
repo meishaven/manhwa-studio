@@ -334,7 +334,7 @@ jobs:
           if (-not $installer) { throw "Windows installer .exe is missing." }
           $package = Get-Content "apps/electron/package.json" -Raw | ConvertFrom-Json
           $appVersion = [string]$package.version
-          if ($appVersion -notmatch '^\d+\.\d+\.\d+(-beta\.\d+)?
+          if ($appVersion -notmatch '^\d+\.\d+\.\d+(-beta\.\d+)?$') {
             throw "Invalid AiAN app version in apps/electron/package.json: $appVersion"
           }
           $tag = "aian-studio-v$($appVersion)-build-${{ github.run_number }}"
