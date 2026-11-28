@@ -1,6 +1,6 @@
 {
   "name": "@koma/electron",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AiAN Studio — local-first manga, manhwa, manhua and webtoon translation and scanlation workspace",
   "main": "dist-electron/main.js",
   "author": {

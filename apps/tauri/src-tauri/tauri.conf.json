@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "KOMA Studio",
-  "version": "1.3.1",
-  "identifier": "com.komastudio.desktop",
+  "productName": "AiAN Studio",
+  "version": "1.0.1",
+  "identifier": "com.aian-studio.desktop",
   "build": {
     "beforeDevCommand": "bun run dev:desktop",
     "beforeBuildCommand": "bun run build",
@@ -57,27 +57,27 @@
     ],
     "resources": [],
     "externalBin": [],
-    "copyright": "© KŌMA Studio",
+    "copyright": "© AiAN Studio",
     "category": "Productivity",
     "shortDescription": "Scanlation toolkit",
-    "longDescription": "KŌMA Studio is a comprehensive scanlation toolkit for cleaning, translating and typesetting manga.",
+    "longDescription": "AiAN Studio is a desktop workspace for translating, cleaning and typesetting manga, manhwa and webtoons.",
     "fileAssociations": [
       {
         "ext": ["cbz"],
-        "name": "KŌMA Comic Archive (CBZ)",
-        "description": "KŌMA Studio comic book archive (zip)",
+        "name": "AiAN Comic Archive (CBZ)",
+        "description": "AiAN Studio comic book archive (zip)",
         "mimeType": "application/vnd.comicbook+zip"
       },
       {
         "ext": ["cb7"],
-        "name": "KŌMA Comic Archive (CB7)",
-        "description": "KŌMA Studio comic book archive (7z)",
+        "name": "AiAN Comic Archive (CB7)",
+        "description": "AiAN Studio comic book archive (7z)",
         "mimeType": "application/vnd.comicbook+7zip"
       },
       {
         "ext": ["pdf"],
-        "name": "KŌMA PDF Document",
-        "description": "KŌMA Studio PDF document",
+        "name": "AiAN PDF Document",
+        "description": "AiAN Studio PDF document",
         "mimeType": "application/pdf"
       }
     ],
@@ -104,12 +104,12 @@
   "plugins": {
     "deep-link": {
       "schemes": [
-        "komastudio"
+        "aianstudio"
       ]
     },
     "updater": {
       "endpoints": [
-        "https://github.com/klaus-2/koma-studio/releases/latest/download/latest.json"
+        "https://github.com/meishaven/manhwa-studio/releases/latest/download/latest.json"
       ],
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEI1NjcwODIxODU5MzkwNDIKUldSQ2tKT0ZJUWhudGRIcW1qd3ZmaVVTWEk0aE1QZzZmQ1FMU0dJTC9ReGwxTHlwblRpbG5EdmsK",
       "requireSignedVersion": true

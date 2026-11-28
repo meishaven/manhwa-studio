@@ -29,6 +29,27 @@ export interface RenderTextPreviewDockAnchor {
   placement: 'right' | 'left' | 'top' | 'bottom';
 }
 
+export interface RenderTextPreviewDockPosition {
+  left: number;
+  top: number;
+}
+
+const DOCK_POSITION_STORAGE_KEY = 'aian:render-text-dock-position:v1';
+
+const readStoredDockPosition = (): RenderTextPreviewDockPosition | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.localStorage.getItem(DOCK_POSITION_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<RenderTextPreviewDockPosition>;
+    return Number.isFinite(parsed.left) && Number.isFinite(parsed.top)
+      ? { left: Number(parsed.left), top: Number(parsed.top) }
+      : null;
+  } catch {
+    return null;
+  }
+};
+
 interface UseRenderTextPreviewTypeDockParams {
   showRenderDock: boolean;
   dockAnchor: RenderTextPreviewDockAnchor | null;
@@ -119,9 +140,42 @@ export const useRenderTextPreviewTypeDock = ({
   }, [dockAnchor, showRenderDock]);
 
   const [dockVisible, setDockVisible] = useState(true);
+  const [manualDockPosition, setManualDockPosition] = useState<RenderTextPreviewDockPosition | null>(readStoredDockPosition);
+
+  const onDockPositionChange = useCallback((position: RenderTextPreviewDockPosition | null, persist = false) => {
+    if (!position) {
+      setManualDockPosition(null);
+      if (persist && typeof window !== 'undefined') {
+        try { window.localStorage.removeItem(DOCK_POSITION_STORAGE_KEY); } catch { /* storage may be unavailable */ }
+      }
+      return;
+    }
+
+    const node = dockRef.current;
+    const width = node?.offsetWidth ?? 440;
+    const height = node?.offsetHeight ?? 150;
+    const next = {
+      left: Math.round(Math.max(8, Math.min(position.left, Math.max(8, window.innerWidth - width - 8)))),
+      top: Math.round(Math.max(8, Math.min(position.top, Math.max(8, window.innerHeight - height - 8)))),
+    };
+    setManualDockPosition(next);
+    if (persist && typeof window !== 'undefined') {
+      try { window.localStorage.setItem(DOCK_POSITION_STORAGE_KEY, JSON.stringify(next)); } catch { /* storage may be unavailable */ }
+    }
+  }, [dockRef]);
 
   useEffect(() => {
-    if (!showRenderDock || !dockAnchor) return;
+    if (!showRenderDock) return;
+    if (manualDockPosition) {
+      const node = dockRef.current;
+      if (node) {
+        node.style.left = `${manualDockPosition.left}px`;
+        node.style.top = `${manualDockPosition.top}px`;
+      }
+      setDockVisible(true);
+      return;
+    }
+    if (!dockAnchor) return;
     const overlay = overlayRef.current;
     if (!overlay) return;
 
@@ -174,7 +228,7 @@ export const useRenderTextPreviewTypeDock = ({
       if (stageEl) stageEl.removeEventListener('scroll', handleStageScroll);
       window.removeEventListener('resize', handleStageScroll);
     };
-  }, [showRenderDock, dockAnchor, dockSizeRevision]);
+  }, [showRenderDock, dockAnchor, dockSizeRevision, manualDockPosition]);
 
   const updateSelectedRegionStyle = useCallback(
     (updater: (style: RenderTextStyle) => RenderTextStyle) => {
@@ -337,6 +391,7 @@ export const useRenderTextPreviewTypeDock = ({
   );
 
   useEffect(() => {
+    if (manualDockPosition) return;
     if (!showRenderDock || !selectedRegion) {
       setDockAnchor((current) => (current === null ? current : null));
       return;
@@ -521,6 +576,7 @@ export const useRenderTextPreviewTypeDock = ({
     isCompactViewport,
     selectedRegion,
     showRenderDock,
+    manualDockPosition,
   ]);
 
   const nudgeSelectedRegion = useCallback(
@@ -554,5 +610,7 @@ export const useRenderTextPreviewTypeDock = ({
     adjustSelectedRotation,
     nudgeSelectedRegion,
     dockVisible,
+    manualDockPosition,
+    onDockPositionChange,
   };
 };

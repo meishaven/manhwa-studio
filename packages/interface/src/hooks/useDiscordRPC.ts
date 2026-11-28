@@ -187,8 +187,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: t("discord.presence.idle.state" as any),
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         workspace_idle: {
@@ -197,8 +197,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: appName,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         aio_pipeline_automatic: {
@@ -207,8 +207,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: t("discord.presence.mode.automatic" as any),
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         aio_pipeline_manual: {
@@ -217,8 +217,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: t("discord.presence.mode.manual" as any),
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         translator_mode: {
@@ -227,8 +227,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: modeLabels.translator,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         typesetter_mode: {
@@ -237,8 +237,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: modeLabels.typesetter,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         cleaner_redraw_mode: {
@@ -247,8 +247,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: modeLabels.cleaner,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         raw_provider_mode: {
@@ -257,8 +257,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: modeLabels.raw,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         proofreader_qc_mode: {
@@ -267,8 +267,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: modeLabels.proofreader,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         stitcher_mode: {
@@ -277,8 +277,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: modeLabels.stitch,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         splitter_mode: {
@@ -287,8 +287,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: modeLabels.split,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         watermark_mode: {
@@ -297,8 +297,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: modeLabels.watermark,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         enhance_mode: {
@@ -307,8 +307,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: modeLabels.enhance,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         chapter_optimizer_mode: {
@@ -317,8 +317,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: modeLabels.optimizer,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         blogger_cdn_mode: {
@@ -327,8 +327,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: modeLabels.blogger,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         image_upload_mode: {
@@ -337,8 +337,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: modeLabels.imgur,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         guides_tutorials: {
@@ -347,8 +347,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: modeLabels.guides,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         resources_materials: {
@@ -357,8 +357,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: modeLabels.resources,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         settings: {
@@ -367,8 +367,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: routePresetLabels.settings,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         rankings: {
@@ -377,8 +377,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: routePresetLabels.rankings,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         scanlation_feed: {
@@ -387,8 +387,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: routePresetLabels.scanlationFeed,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         login_register: {
@@ -397,8 +397,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: routePresetLabels.loginRegister,
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
         batch_mode: {
@@ -407,8 +407,8 @@ export const useDiscordRPC = (user: DiscordDashboardUser): DiscordRpcController 
           largeImageText: appName,
           smallImageText: t("discord.presence.batch.label" as any),
           buttons: [
-            { label: t("discord.presence.button.website" as any), url: "https://koma-studio.site" },
-            { label: t("discord.presence.button.download" as any), url: "https://koma-studio.site/download/windows" },
+            { label: t("discord.presence.button.website" as any), url: "https://github.com/meishaven/manhwa-studio" },
+            { label: t("discord.presence.button.download" as any), url: "https://github.com/meishaven/manhwa-studio/releases/latest" },
           ],
         },
       };

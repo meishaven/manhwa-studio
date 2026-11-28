@@ -1,23 +1,23 @@
 {
   "name": "@koma/tauri",
-  "version": "1.3.1",
+  "version": "1.0.1",
   "packageManager": "bun@1.4.0",
   "engines": {
     "bun": ">=1.4.0",
     "node": ">=22.18"
   },
   "private": true,
-  "description": "KŌMA Studio v2 — Tauri-based scanlation toolkit",
+  "description": "AiAN Studio — Tauri desktop shell for the scanlation workspace",
   "type": "module",
-  "author": "KŌMA Studio",
+  "author": "AiAN Studio",
   "license": "MIT",
-  "homepage": "https://koma-studio.site/",
+  "homepage": "https://github.com/meishaven/manhwa-studio",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/klaus-2/koma-studio.git"
+    "url": "git+https://github.com/meishaven/manhwa-studio.git"
   },
   "bugs": {
-    "url": "https://github.com/klaus-2/koma-studio/issues"
+    "url": "https://github.com/meishaven/manhwa-studio/issues"
   },
   "scripts": {
     "dev": "vite --mode development",

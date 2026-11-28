@@ -108,10 +108,10 @@ interface Nich87ActivityPayload {
 const MAX_BUTTONS = 2;
 const MAX_TEXT_LENGTH = 128;
 const MIN_ACTIVITY_UPDATE_INTERVAL_MS = 250;
-const DEFAULT_DISCORD_CLIENT_ID = "1484952540775977061";
+const DEFAULT_DISCORD_CLIENT_ID = "";
 
-const DEFAULT_KOMA_WEBSITE_URL = "https://koma-studio.site";
-const DEFAULT_KOMA_DOWNLOAD_URL = "https://koma-studio.site/download/windows";
+const DEFAULT_AIAN_WEBSITE_URL = "https://github.com/meishaven/manhwa-studio";
+const DEFAULT_AIAN_DOWNLOAD_URL = "https://github.com/meishaven/manhwa-studio/releases/latest";
 
 const DISCORD_ACTIVITY_PRESETS: Record<DiscordActivityPreset, {
   details: string;
@@ -124,184 +124,184 @@ const DISCORD_ACTIVITY_PRESETS: Record<DiscordActivityPreset, {
   aio_pipeline_automatic: {
     details: "AIO Pipeline",
     state: "Automatic Mode",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "aio_pipeline_automatic",
     smallImageText: "AIO Pipeline Automatic Mode",
   },
   aio_pipeline_manual: {
     details: "AIO Pipeline",
     state: "Manual Mode",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "aio_pipeline_manual",
     smallImageText: "AIO Pipeline Manual Mode",
   },
   translator_mode: {
     details: "Translation Workspace",
     state: "Translator Mode",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "translator_mode",
     smallImageText: "Translator Mode",
   },
   typesetter_mode: {
     details: "Typesetting Workspace",
     state: "Typesetter Mode",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "typesetter_mode",
     smallImageText: "Typesetter Mode",
   },
   cleaner_redraw_mode: {
     details: "Art Cleanup",
     state: "Cleaner / Redraw Mode",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "cleaner_redraw_mode",
     smallImageText: "Cleaner / Redraw Mode",
   },
   idle: {
-    details: "KŌMA Studio",
+    details: "AiAN Studio",
     state: "Idle",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "idle",
     smallImageText: "Idle",
   },
   workspace_idle: {
     details: "Workspace",
     state: "Idle",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "idle",
     smallImageText: "Workspace",
   },
   raw_provider_mode: {
     details: "Provider Console",
     state: "Raw Provider Mode",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "raw_provider_mode",
     smallImageText: "Raw Provider Mode",
   },
   proofreader_qc_mode: {
     details: "Review Workspace",
     state: "Proofreader / QC Mode",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "proofreader_qc_mode",
     smallImageText: "Proofreader / QC Mode",
   },
   stitcher_mode: {
     details: "Page Stitching",
     state: "Stitcher Mode",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "stitcher_mode",
     smallImageText: "Stitcher Mode",
   },
   splitter_mode: {
     details: "Page Splitting",
     state: "Splitter Mode",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "splitter_mode",
     smallImageText: "Splitter Mode",
   },
   watermark_mode: {
     details: "Branding Tools",
     state: "Watermark Mode",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "watermark_mode",
     smallImageText: "Watermark Mode",
   },
   enhance_mode: {
     details: "Image Enhancement",
     state: "Enhance Mode",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "enhance_mode",
     smallImageText: "Enhance Mode",
   },
   chapter_optimizer_mode: {
     details: "Release Optimization",
     state: "Chapter Optimizer Mode",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "chapter_optimizer_mode",
     smallImageText: "Chapter Optimizer Mode",
   },
   blogger_cdn_mode: {
     details: "Distribution Tools",
     state: "Blogger CDN Mode",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "blogger_cdn_mode",
     smallImageText: "Blogger CDN Mode",
   },
   image_upload_mode: {
     details: "Distribution Tools",
     state: "Image Upload Mode",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "image_upload_mode",
     smallImageText: "Image Upload Mode",
   },
   guides_tutorials: {
     details: "Help Center",
     state: "Guides & Tutorials",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "guides_tutorials",
     smallImageText: "Guides & Tutorials",
   },
   resources_materials: {
     details: "Help Center",
     state: "Resources & Materials",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "resources_materials",
     smallImageText: "Resources & Materials",
   },
   settings: {
     details: "Preferences",
     state: "Settings",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "settings",
     smallImageText: "Settings",
   },
   rankings: {
     details: "Model Leaderboards",
     state: "Rankings",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "rankings",
     smallImageText: "Rankings",
   },
   scanlation_feed: {
     details: "Community",
     state: "Scanlation Feed",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "scanlation_feed",
     smallImageText: "Scanlation Feed",
   },
   login_register: {
     details: "Account Access",
     state: "Login / Register",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "login_register",
     smallImageText: "Login / Register",
   },
   batch_mode: {
     details: "Batch Processing",
     state: "Batch Mode",
-    largeImageKey: "koma_logo",
-    largeImageText: "KŌMA Studio",
+    largeImageKey: "aian_logo",
+    largeImageText: "AiAN Studio",
     smallImageKey: "batch_mode",
     smallImageText: "Batch Mode",
   },
@@ -381,6 +381,7 @@ const readClientIdFromEnvFile = (filePath: string): string | null => {
       const rawValue = trimmed.slice(separatorIndex + 1).trim();
 
       if (
+        key === "AIAN_DISCORD_CLIENT_ID" ||
         key === "DISCORD_RPC_CLIENT_ID" ||
         key === "DISCORD_CLIENT_ID" ||
         key === "VITE_DISCORD_CLIENT_ID"
@@ -447,7 +448,7 @@ const resolveDesktopConfigValue = (key: string): string | null => {
   for (const envFile of envCandidates) {
     const value = readClientIdFromEnvFile(envFile);
     if (value) {
-      return key === "DISCORD_RPC_CLIENT_ID" || key === "DISCORD_CLIENT_ID" || key === "VITE_DISCORD_CLIENT_ID"
+      return key === "AIAN_DISCORD_CLIENT_ID" || key === "DISCORD_RPC_CLIENT_ID" || key === "DISCORD_CLIENT_ID" || key === "VITE_DISCORD_CLIENT_ID"
         ? value
         : readValueFromEnvFile(envFile, key);
     }
@@ -488,6 +489,7 @@ const readValueFromEnvFile = (filePath: string, key: string): string | null => {
 
 const resolveDiscordClientId = (): string | null => {
   const fromProcess =
+    resolveDesktopConfigValue("AIAN_DISCORD_CLIENT_ID") ??
     resolveDesktopConfigValue("DISCORD_RPC_CLIENT_ID") ??
     resolveDesktopConfigValue("DISCORD_CLIENT_ID") ??
     resolveDesktopConfigValue("VITE_DISCORD_CLIENT_ID");
@@ -517,18 +519,18 @@ const resolveDiscordClientId = (): string | null => {
   return DEFAULT_DISCORD_CLIENT_ID;
 };
 
-const KOMA_WEBSITE_URL =
-  resolveDesktopConfigValue("KOMA_STUDIO_URL") ??
+const AIAN_WEBSITE_URL =
+  resolveDesktopConfigValue("AIAN_STUDIO_URL") ??
   resolveDesktopConfigValue("VITE_PROJECT_WEBSITE_URL") ??
-  DEFAULT_KOMA_WEBSITE_URL;
+  DEFAULT_AIAN_WEBSITE_URL;
 
-const KOMA_DOWNLOAD_URL =
-  resolveDesktopConfigValue("KOMA_STUDIO_DOWNLOAD_URL") ??
-  DEFAULT_KOMA_DOWNLOAD_URL;
+const AIAN_DOWNLOAD_URL =
+  resolveDesktopConfigValue("AIAN_STUDIO_DOWNLOAD_URL") ??
+  DEFAULT_AIAN_DOWNLOAD_URL;
 
 const DEFAULT_BUTTONS: DiscordButton[] = [
-  { label: "Website", url: KOMA_WEBSITE_URL },
-  { label: "Download", url: KOMA_DOWNLOAD_URL },
+  { label: "AiAN Studio", url: AIAN_WEBSITE_URL },
+  { label: "Download", url: AIAN_DOWNLOAD_URL },
 ];
 
 const normalizeMode = (mode: string): ProcessingMode =>
@@ -748,7 +750,7 @@ export class DiscordRPCService {
     if (!this.clientId) {
       if (!this.hasWarnedMissingClientId) {
         console.warn(
-          "Discord Rich Presence desativado: configure DISCORD_RPC_CLIENT_ID (ou DISCORD_CLIENT_ID).",
+          "Discord Rich Presence disabled: set AIAN_DISCORD_CLIENT_ID to your AiAN Discord application ID.",
         );
         this.hasWarnedMissingClientId = true;
       }
@@ -1052,7 +1054,6 @@ export class DiscordRPCService {
     const details = currentFile
       ? `Processando lote - ${truncateFileName(currentFile)}`
       : "Processando lote";
-
     await this.setPresetActivity("batch_mode", {
       details,
       state: `${safeCurrentIndex}/${safeFileCount} files`,
@@ -1060,5 +1061,4 @@ export class DiscordRPCService {
     });
   }
 }
-
 export const discordRPC = new DiscordRPCService();
