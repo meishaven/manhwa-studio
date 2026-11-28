@@ -950,7 +950,6 @@ const RenderTextPreviewNoir = ({
     </>
   );
 };
-
 /* ── Tooltip line ── */
 function TooltipLine({ label, value, tone }: { label: string; value: string; tone: 'azure' | 'mint' | 'gold' }) {
   const toneCls = { azure: 'text-azure', mint: 'text-mint', gold: 'text-gold' }[tone];
@@ -961,9 +960,7 @@ function TooltipLine({ label, value, tone }: { label: string; value: string; ton
     </div>
   );
 }
-
 // ── Main Component ──
-
 function areEqual(
   prev: Parameters<typeof RenderTextPreviewNoir>[0],
   next: Parameters<typeof RenderTextPreviewNoir>[0],
@@ -1011,5 +1008,4 @@ function areEqual(
     prev.inlineEditorRequestKey === next.inlineEditorRequestKey
   );
 }
-
 export default React.memo(RenderTextPreviewNoir, areEqual);
