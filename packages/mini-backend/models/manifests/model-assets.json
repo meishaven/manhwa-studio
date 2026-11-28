@@ -889,13 +889,19 @@
           "path": "paddle/korean_PP-OCRv5_mobile_rec.onnx",
           "sha256": "92f0b7785e64fc9090106a241cf4c1eb97472824558272751b88a2a4476d3a08",
           "size": 13418787,
-          "url": "https://raw.githubusercontent.com/Nyora-Manga/nyora-translate-models/cf33c2959f02f5a48ad2bc98bd80b0b50b8632ec/paddle/korean_PP-OCRv5_mobile_rec.onnx"
+          "urls": [
+            "https://raw.githubusercontent.com/Nyora-Manga/nyora-translate-models/cf33c2959f02f5a48ad2bc98bd80b0b50b8632ec/paddle/korean_PP-OCRv5_mobile_rec.onnx",
+            "https://github.com/Nyora-Manga/nyora-translate-models/raw/cf33c2959f02f5a48ad2bc98bd80b0b50b8632ec/paddle/korean_PP-OCRv5_mobile_rec.onnx"
+          ]
         },
         {
           "path": "paddle/ppocrv5_korean_dict.txt",
           "sha256": "a88071c68c01707489baa79ebe0405b7beb5cca229f4fc94cc3ef992328802d7",
           "size": 47451,
-          "url": "https://raw.githubusercontent.com/Nyora-Manga/nyora-translate-models/cf33c2959f02f5a48ad2bc98bd80b0b50b8632ec/paddle/ppocrv5_korean_dict.txt"
+          "urls": [
+            "https://raw.githubusercontent.com/Nyora-Manga/nyora-translate-models/cf33c2959f02f5a48ad2bc98bd80b0b50b8632ec/paddle/ppocrv5_korean_dict.txt",
+            "https://github.com/Nyora-Manga/nyora-translate-models/raw/cf33c2959f02f5a48ad2bc98bd80b0b50b8632ec/paddle/ppocrv5_korean_dict.txt"
+          ]
         }
       ],
       "totalBytes": 18285814
