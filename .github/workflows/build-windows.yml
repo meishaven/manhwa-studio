@@ -332,9 +332,17 @@ jobs:
         run: |
           $installer = Get-ChildItem "apps/electron/release-desktop/ci" -Filter "*.exe" -File | Select-Object -First 1
           if (-not $installer) { throw "Windows installer .exe is missing." }
-          $tag = "aian-studio-v1.0.0-build-${{ github.run_number }}"
+          $package = Get-Content "apps/electron/package.json" -Raw | ConvertFrom-Json
+          $appVersion = [string]$package.version
+          if ($appVersion -notmatch '^\d+\.\d+\.\d+(?:-beta\.\d+)?
+) {
+            throw "Invalid AiAN app version in apps/electron/package.json: $appVersion"
+          }
+          $tag = "aian-studio-v$($appVersion)-build-${{ github.run_number }}"
+          $title = "AiAN Studio $appVersion - Windows x64"
+          $notes = "AiAN Studio $appVersion Windows x64 installer built by GitHub Actions."
           $latest = "apps/electron/release-desktop/ci/latest.yml"
           if (-not (Test-Path -LiteralPath $latest -PathType Leaf)) { throw "Updater metadata latest.yml is missing." }
           $blockmaps = @(Get-ChildItem "apps/electron/release-desktop/ci" -Filter "*.blockmap" -File | ForEach-Object { $_.FullName })
           $releaseAssets = @($installer.FullName, $latest) + $blockmaps
-          gh release create $tag @releaseAssets --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title "AiAN Studio 1.0.0 - Windows x64" --notes "Initial AiAN Studio 1.0.0 Windows x64 installer built by GitHub Actions."
+          gh release create $tag @releaseAssets --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title $title --notes $notes
