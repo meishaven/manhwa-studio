@@ -19,6 +19,24 @@ except Exception as exc:  # pragma: no cover - optional runtime deps
 
 @unittest.skipIf(IMPORT_ERROR is not None, f"optional runtime dependencies missing: {IMPORT_ERROR}")
 class OCRFactoryTests(unittest.TestCase):
+    def test_korean_auto_prefers_the_cpu_onnx_recognizer(self) -> None:
+        with (
+            patch.object(ocr_factory, "model_is_installed", return_value=True),
+            patch.object(ocr_factory, "paddleocr_runtime_ready", return_value=True),
+        ):
+            selected = ocr_factory._resolve_auto_model(language="ko", has_gpu=False)
+
+        self.assertEqual(selected, "paddleocr_ko_v5")
+
+    def test_korean_model_is_listed_for_model_manager(self) -> None:
+        options = {
+            option["key"]: option
+            for option in ocr_factory.list_ocr_models(has_gpu=False, language="ko")
+        }
+
+        self.assertIn("paddleocr_ko_v5", options)
+        self.assertEqual(options["paddleocr_ko_v5"]["device"], "cpu_gpu")
+
     def test_easyocr_metadata_supports_multiple_languages(self) -> None:
         self.assertIn("ja", ocr_factory.OCR_MODELS["easyocr"]["languages"])
 

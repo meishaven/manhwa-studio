@@ -165,7 +165,7 @@ def _install_managed_model(
         return ensure_pororo_models_installed(languages=_pororo_languages_for_source(source_language))
     if normalized_model_id == "manga_ocr":
         return ensure_manga_ocr_models_installed()
-    if normalized_model_id in {"paddleocr", "paddleocr_en_v5", "paddleocr_latin_v5", "paddleocr_ch_v5"}:
+    if normalized_model_id in {"paddleocr", "paddleocr_en_v5", "paddleocr_latin_v5", "paddleocr_ch_v5", "paddleocr_ko_v5"}:
         return ensure_paddleocr_models_installed(normalized_model_id)
     if normalized_model_id in {"aot", "lama_manga", "opencv_lama", "lama_fp32"}:
         return ensure_inpainting_model_installed(normalized_model_id)

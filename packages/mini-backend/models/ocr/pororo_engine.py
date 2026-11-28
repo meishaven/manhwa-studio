@@ -58,4 +58,6 @@ class PororoOCREngine(RegionCropOCR):
         if not isinstance(pieces, list):
             return "", 0.0
         text = " ".join(part for part in (str(piece).strip() for piece in pieces) if part)
-        return text, (1.0 if text else 0.0)
+        # Pororo's vendored wrapper does not expose a confidence score.
+        # Report unknown/zero rather than manufacturing 1.0 for any text.
+        return text, 0.0

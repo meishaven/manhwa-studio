@@ -45,6 +45,7 @@ from models.ocr.paddleocr import (
     PPOCRV5ChineseRecEngine,
     PPOCRV5EnglishRecEngine,
     PPOCRV5LatinRecEngine,
+    PPOCRV5KoreanRecEngine,
     PPOCRV5RecEngine,
 )
 from models.ocr.paddleocr.storage import (
@@ -117,6 +118,7 @@ _RUNTIME_READY: Mapping[str, _ReadyCheck] = {
     "paddleocr_latin_v5": _language_agnostic(lambda: paddleocr_runtime_ready("paddleocr_latin_v5")),
     "paddleocr_ch_v5": _language_agnostic(lambda: paddleocr_runtime_ready("paddleocr_ch_v5")),
     "paddleocr_en_v5": _language_agnostic(lambda: paddleocr_runtime_ready("paddleocr_en_v5")),
+    "paddleocr_ko_v5": _language_agnostic(lambda: paddleocr_runtime_ready("paddleocr_ko_v5")),
     "easyocr": _easyocr_ready,
     "pororo": _pororo_ready,
     "paddleocr_vl_manga": _with_torch(paddleocr_vl_manga_runtime_ready),
@@ -144,7 +146,7 @@ class _OcrModelSpec:
 _SPECS: tuple[_OcrModelSpec, ...] = (
     _OcrModelSpec(
         AUTO_KEY, "Auto (Default)", (_MULTI,), "cpu_gpu", "Adaptive per language",
-        "Picks the OCR engine by language (ja->manga_ocr, ko->pororo, en->paddleocr_en_v5, "
+        "Picks the OCR engine by language (ja->manga_ocr, ko->paddleocr_ko_v5, en->paddleocr_en_v5, "
         "zh->paddleocr_ch_v5, ru->paddleocr, latin->paddleocr_latin_v5).",
     ),
     _OcrModelSpec("manga_ocr", "Manga OCR (ONNX)", ("ja",), "cpu_gpu", "Alta para japones",
@@ -160,6 +162,8 @@ _SPECS: tuple[_OcrModelSpec, ...] = (
                   "High for Chinese", "Chinese OCR with ch_PP-OCRv5_rec_mobile_infer."),
     _OcrModelSpec("paddleocr_en_v5", "PaddleOCR v5 English (ONNX)", ("en",), "cpu_gpu",
                   "High for English", "English OCR with en_PP-OCRv5_mobile_rec (updated model)"),
+    _OcrModelSpec("paddleocr_ko_v5", "PaddleOCR v5 Korean Mobile (ONNX)", ("ko",), "cpu_gpu",
+                  "Korean text recognition", "Lightweight Korean, English and number recognizer using ONNX Runtime."),
     _OcrModelSpec("easyocr", "EasyOCR", ("en", "ko", "ja", "zh", "zh-cn", "zh-tw", "ru"), "cpu_gpu",
                   "Fallback", "Local multi-language OCR"),
     _OcrModelSpec("pororo", "Pororo OCR", ("ko",), "cpu_gpu", "Alta para coreano",
@@ -261,7 +265,7 @@ def _default_model_candidates_for_language(language: str) -> list[str]:
     if normalized == "ja":
         return ["meiki_ocr", "manga_ocr", "paddleocr_latin_v5", "paddleocr_ch_v5", "easyocr"]
     if normalized == "ko":
-        return ["pororo", "paddleocr_latin_v5", "easyocr"]
+        return ["paddleocr_ko_v5", "pororo", "easyocr"]
     if normalized == "en":
         return ["paddleocr_en_v5", "paddleocr_latin_v5", "easyocr"]
     if normalized in {"zh", "zh-cn", "zh-tw"}:
@@ -344,6 +348,9 @@ def _build_ocr_engine(model_key: str, device_info: DeviceInfo, language: str) ->
     if model_key == "paddleocr_en_v5":
         model_dir = resolve_paddleocr_model_dir("paddleocr_en_v5")
         return PPOCRV5EnglishRecEngine(providers=providers, model_dir=model_dir)
+    if model_key == "paddleocr_ko_v5":
+        model_dir = resolve_paddleocr_model_dir("paddleocr_ko_v5")
+        return PPOCRV5KoreanRecEngine(providers=providers, model_dir=model_dir)
     if model_key == "paddleocr_latin_v5":
         model_dir = resolve_paddleocr_model_dir("paddleocr_latin_v5")
         return PPOCRV5LatinRecEngine(providers=providers, model_dir=model_dir)

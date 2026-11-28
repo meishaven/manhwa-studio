@@ -57,6 +57,28 @@ _MAX_INLINE_HASH_BYTES = 8 * 1024 * 1024
 
 DETECTOR_PATH = "onnx/PP-OCRv5/det/ch_PP-OCRv5_mobile_det.onnx"
 
+# Korean PP-OCRv5 Mobile is mirrored as an unmodified Apache-2.0 ONNX export.
+# Pin the mirror commit and verify each asset against its recorded SHA-256.
+KOREAN_PADDLEOCR_MIRROR_REVISION = "cf33c2959f02f5a48ad2bc98bd80b0b50b8632ec"
+KOREAN_PADDLEOCR_REC_PATH = "paddle/korean_PP-OCRv5_mobile_rec.onnx"
+KOREAN_PADDLEOCR_DICT_PATH = "paddle/ppocrv5_korean_dict.txt"
+KOREAN_PADDLEOCR_REC_URLS = (
+    "https://raw.githubusercontent.com/Nyora-Manga/nyora-translate-models/"
+    f"{KOREAN_PADDLEOCR_MIRROR_REVISION}/{KOREAN_PADDLEOCR_REC_PATH}",
+    "https://github.com/Nyora-Manga/nyora-translate-models/raw/"
+    f"{KOREAN_PADDLEOCR_MIRROR_REVISION}/{KOREAN_PADDLEOCR_REC_PATH}",
+)
+KOREAN_PADDLEOCR_DICT_URLS = (
+    "https://raw.githubusercontent.com/Nyora-Manga/nyora-translate-models/"
+    f"{KOREAN_PADDLEOCR_MIRROR_REVISION}/{KOREAN_PADDLEOCR_DICT_PATH}",
+    "https://github.com/Nyora-Manga/nyora-translate-models/raw/"
+    f"{KOREAN_PADDLEOCR_MIRROR_REVISION}/{KOREAN_PADDLEOCR_DICT_PATH}",
+)
+KOREAN_PADDLEOCR_REC_SIZE = 13_418_787
+KOREAN_PADDLEOCR_REC_SHA256 = "92f0b7785e64fc9090106a241cf4c1eb97472824558272751b88a2a4476d3a08"
+KOREAN_PADDLEOCR_DICT_SIZE = 47_451
+KOREAN_PADDLEOCR_DICT_SHA256 = "a88071c68c01707489baa79ebe0405b7beb5cca229f4fc94cc3ef992328802d7"
+
 INSTALL_ENDPOINT = "/models/install"
 MANAGED_INSTALL_STRATEGY = "backend_managed"
 
@@ -195,9 +217,12 @@ def _asset(
     *,
     url: str | None = None,
     target: str | None = None,
+    urls: list[str] | tuple[str, ...] | None = None,
 ) -> dict[str, Any]:
     entry: dict[str, Any] = {"path": path, "size": size, "sha256": sha256}
-    if url:
+    if urls:
+        entry["urls"] = list(urls)
+    elif url:
         entry["url"] = url
     if target:
         entry["target"] = target
@@ -257,6 +282,52 @@ def _paddleocr_models(verify: bool) -> dict[str, dict[str, Any]]:
                 raise SystemExit(f"modelscope manifest is missing {path}")
             assets.append(_asset(path, info["size"], info["sha256"]))
         models[model_id] = {"assets": assets}
+    detector = modelscope.get(DETECTOR_PATH)
+    if detector is None:
+        raise SystemExit(f"modelscope manifest is missing shared detector {DETECTOR_PATH}")
+    korean_rec = {
+        "path": KOREAN_PADDLEOCR_REC_PATH,
+        "urls": KOREAN_PADDLEOCR_REC_URLS,
+        "size": KOREAN_PADDLEOCR_REC_SIZE,
+        "sha256": KOREAN_PADDLEOCR_REC_SHA256,
+    }
+    korean_dictionary = {
+        "path": KOREAN_PADDLEOCR_DICT_PATH,
+        "urls": KOREAN_PADDLEOCR_DICT_URLS,
+        "size": KOREAN_PADDLEOCR_DICT_SIZE,
+        "sha256": KOREAN_PADDLEOCR_DICT_SHA256,
+    }
+    if verify:
+        for asset in (korean_rec, korean_dictionary):
+            verified = False
+            failures: list[str] = []
+            for candidate_url in asset["urls"]:
+                try:
+                    _size, digest = _download_sha256(candidate_url, expected_size=asset["size"])
+                except Exception as exc:
+                    failures.append(f"{candidate_url}: {exc}")
+                    continue
+                if digest.lower() != asset["sha256"]:
+                    raise SystemExit(
+                        f"{candidate_url}: SHA-256 {digest} != pinned {asset['sha256']}"
+                    )
+                verified = True
+                break
+            if not verified:
+                raise SystemExit("; ".join(failures))
+    models["paddleocr_ko_v5"] = {
+        "assets": [
+            _asset(DETECTOR_PATH, detector["size"], detector["sha256"]),
+            _asset(
+                korean_rec["path"], korean_rec["size"], korean_rec["sha256"],
+                urls=korean_rec["urls"],
+            ),
+            _asset(
+                korean_dictionary["path"], korean_dictionary["size"], korean_dictionary["sha256"],
+                urls=korean_dictionary["urls"],
+            ),
+        ]
+    }
     _model_total(models)
     return models
 

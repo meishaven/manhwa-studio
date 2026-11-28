@@ -45,12 +45,14 @@ _RECOGNIZER_TARGETS: Final[Mapping[str, str]] = {
     "paddleocr_latin_v5": "latin_PP-OCRv5_rec_mobile_infer.onnx",
     "paddleocr_ch_v5": "ch_PP-OCRv5_rec_mobile_infer.onnx",
     "paddleocr_en_v5": "en_PP-OCRv5_mobile_rec.onnx",
+    "paddleocr_ko_v5": "korean_PP-OCRv5_mobile_rec_infer.onnx",
 }
 _DICTIONARY_TARGETS: Final[Mapping[str, str]] = {
     "paddleocr": "ppocrv5_eslav_dict.txt",
     "paddleocr_latin_v5": "ppocrv5_latin_dict.txt",
     "paddleocr_ch_v5": "ppocrv5_dict.txt",
     "paddleocr_en_v5": "ppocrv5_en_dict.txt",
+    "paddleocr_ko_v5": "ppocrv5_korean_dict.txt",
 }
 
 
@@ -60,10 +62,16 @@ class RemoteAsset:
     path: str
     size: int
     sha256: str
+    url: str | None = None
+    url_candidates: tuple[str, ...] = ()
 
     @property
     def urls(self) -> tuple[str, ...]:
-        """Every candidate that must serve byte-identical content."""
+        """Pinned download endpoints for the same checksum-verified asset."""
+        if self.url_candidates:
+            return self.url_candidates
+        if self.url:
+            return (self.url,)
         return tuple(f"{base}/{self.path}" for base in _MIRROR_BASES)
 
 
@@ -89,7 +97,21 @@ def _build_manifests() -> Mapping[str, tuple[RemoteAsset, ...]]:
                 raise ModelDownloadError(
                     "paddleocr manifest", [f"{model_id}: incomplete asset {path!r}"]
                 )
-            built.append(RemoteAsset(target=path.rsplit("/", 1)[-1], path=path, size=size, sha256=sha256))
+            raw_candidates = asset.get("urls")
+            url_candidates = tuple(
+                str(value).strip()
+                for value in raw_candidates
+                if isinstance(value, str) and value.strip()
+            ) if isinstance(raw_candidates, list) else ()
+            source_url = str(asset.get("url") or "").strip() or None
+            built.append(RemoteAsset(
+                target=path.rsplit("/", 1)[-1],
+                path=path,
+                size=size,
+                sha256=sha256,
+                url=source_url,
+                url_candidates=url_candidates,
+            ))
         # Apply the runtime file-name contract on top of the upstream names.
         renamed = []
         for asset in built:
@@ -102,6 +124,8 @@ def _build_manifests() -> Mapping[str, tuple[RemoteAsset, ...]]:
                         path=asset.path,
                         size=asset.size,
                         sha256=asset.sha256,
+                        url=asset.url,
+                        url_candidates=asset.url_candidates,
                     )
                 )
             else:
@@ -111,6 +135,8 @@ def _build_manifests() -> Mapping[str, tuple[RemoteAsset, ...]]:
                         path=asset.path,
                         size=asset.size,
                         sha256=asset.sha256,
+                        url=asset.url,
+                        url_candidates=asset.url_candidates,
                     )
                 )
         manifests[model_id] = tuple(renamed)

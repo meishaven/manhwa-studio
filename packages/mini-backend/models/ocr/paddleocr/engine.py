@@ -527,7 +527,7 @@ class PPOCRV5RecEngine(BaseOCR):
         language: str,
     ) -> bool:
         value = (text or "").strip()
-        if not value:
+        if not value or not any(character.isalnum() for character in value):
             return True
         if score < 0.55:
             return True
@@ -826,4 +826,27 @@ class PPOCRV5ChineseRecEngine(PPOCRV5RecEngine):
             det_model_filename="ch_PP-OCRv5_mobile_det.onnx",
             model_dir=model_dir,
             model_id="paddleocr_ch_v5",
+        )
+
+
+class PPOCRV5KoreanRecEngine(PPOCRV5RecEngine):
+    key = "paddleocr_ko_v5"
+    name = "PaddleOCR v5 Korean (ONNX)"
+
+    def __init__(
+        self,
+        providers: Sequence[OnnxProviderSpec] | None = None,
+        expansion_percentage: int = 5,
+        batch_size: int = 8,
+        model_dir: str | Path | None = None,
+    ) -> None:
+        super().__init__(
+            providers=providers,
+            expansion_percentage=expansion_percentage,
+            batch_size=batch_size,
+            rec_model_filename="korean_PP-OCRv5_mobile_rec_infer.onnx",
+            dict_filename="ppocrv5_korean_dict.txt",
+            det_model_filename="ch_PP-OCRv5_mobile_det.onnx",
+            model_dir=model_dir,
+            model_id="paddleocr_ko_v5",
         )

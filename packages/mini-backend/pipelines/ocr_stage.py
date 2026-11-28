@@ -229,29 +229,52 @@ async def run_cached_ocr(
         working_mp=config.working_resolution_megapixels,
         ocr_clean_enabled=config.working_resolution_ocr_clean_enabled,
     )
-    cached_by_id, missing = pipeline_cache.get_cached_ocr_for_regions(cache_key, request.seeds)
+    # A manual region is an explicit re-recognition request. Never satisfy it
+    # from an older automatic/manual bbox hit or an identical-crop dedup entry:
+    # that would make selecting the whole bubble appear to do nothing.
+    manual_seeds = [
+        seed for seed in request.seeds
+        if normalize_stage_source(seed.get("source")) == "manual"
+    ]
+    cacheable_seeds = [
+        seed for seed in request.seeds
+        if normalize_stage_source(seed.get("source")) != "manual"
+    ]
+    cached_by_id, missing = pipeline_cache.get_cached_ocr_for_regions(
+        cache_key, cacheable_seeds
+    )
+    cacheable_ids = {seed["id"] for seed in cacheable_seeds}
+    cached_by_id = {
+        record_id: record
+        for record_id, record in cached_by_id.items()
+        if record_id in cacheable_ids
+    }
     if missing:
         # Disk miss-path consult: outside CacheManager._lock (already
-        # released), sqlite read via a worker thread. Blocks are keyed by
-        # bbox id, so re-matching reassigns this pass's seed ids.
+        # released), sqlite read via a worker thread. Manual seeds never enter
+        # this lookup, so a bbox match cannot hide a user's retry.
         disk_blocks = await asyncio.to_thread(store.get_ocr, cache_key)
         if disk_blocks is not None:
-            disk_hits, still_missing = match_ocr_blocks(
+            disk_hits, missing = match_ocr_blocks(
                 disk_blocks,
                 missing,
                 bbox_tolerance_px=pipeline_cache.bbox_tolerance_px,
             )
             cached_by_id.update(disk_hits)
-            missing = still_missing
+    missing.extend(manual_seeds)
 
     dedup_pending: list[tuple[str, OCRSeed, list[OCRSeed]]] = []
     dedup_hit_raw: list[OCRRecord] = []
-    if missing and isinstance(request.image, Image.Image):
+    dedup_candidates = [
+        seed for seed in missing
+        if normalize_stage_source(seed.get("source")) != "manual"
+    ]
+    if dedup_candidates and isinstance(request.image, Image.Image):
         dedup = get_ocr_region_dedup_cache()
         groups = await asyncio.to_thread(
             _group_dedup_seeds,
             request.image,
-            missing,
+            dedup_candidates,
             language=request.language,
             model_key=engine.key,
             working_mp=config.working_resolution_megapixels,
@@ -346,7 +369,13 @@ async def run_cached_ocr(
                 continue
             get_ocr_region_dedup_cache().store(key, [record])
 
-    persistable = [*fresh_by_id.values(), *dedup_enriched]
+    # Manual OCR is deliberately uncached: every manual retry must invoke
+    # the selected recognizer, even when the same bbox was tried moments ago.
+    persistable = [
+        record
+        for record in [*fresh_by_id.values(), *dedup_enriched]
+        if normalize_stage_source(record.get("source")) != "manual"
+    ]
     if persistable:
         pipeline_cache.cache_ocr_results(cache_key, persistable)
         new_blocks: dict[str, dict[str, object]] = {}
