@@ -17,8 +17,8 @@ import type {
 const GITHUB_OWNER = "meishaven";
 const GITHUB_REPO = "manhwa-studio";
 
-const BETA_TAG_PATTERN = /^(?:aian-studio-)?v\d+\.\d+\.\d+-beta\.\d+(?:-build-\d+)?$/i;
-const STABLE_TAG_PATTERN = /^(?:aian-studio-)?v\d+\.\d+\.\d+(?:-build-\d+)?$/i;
+const BETA_TAG_PATTERN = /^aian-studio-v\d+\.\d+\.\d+-beta\.\d+(?:-build-\d+)?$/i;
+const STABLE_TAG_PATTERN = /^aian-studio-v\d+\.\d+\.\d+(?:-build-\d+)?$/i;
 
 const UPDATER_BRIDGE_UNAVAILABLE = "Installer updater bridge is unavailable.";
 
